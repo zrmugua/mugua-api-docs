@@ -7,10 +7,13 @@
 如果你的电脑已经安装了 Node.js 和 npm，可以运行：
 
 ```bash
+npm install
 npm run docs:dev
 ```
 
-如果终端提示找不到 `npm`，可以运行项目里的脚本：
+如果终端提示找不到 `npm`，请先安装 Node.js 20 或更高版本。
+
+本地 Codex 环境也可以运行项目里的脚本：
 
 ```powershell
 .\start-docs.ps1
