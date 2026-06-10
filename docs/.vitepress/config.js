@@ -16,6 +16,7 @@ export default {
     nav: [
       { text: '指南', link: '/guide/start' },
       { text: 'CLI 工具', link: '/cli/cc-switch' },
+      { text: '客户端', link: '/client/cherry-studio' },
       { text: 'API 参考', link: '/reference/models' },
       { text: '常见问题', link: '/guide/faq' },
       { text: '控制台', link: 'https://api.mugua.link' }
@@ -39,8 +40,15 @@ export default {
           { text: 'CC Switch 统一配置', link: '/cli/cc-switch' },
           { text: 'Claude Code 安装配置', link: '/cli/claude-code' },
           { text: 'Codex 安装配置', link: '/cli/codex' },
+          { text: 'AIO Coding Hub 配置指南', link: '/cli/aio-coding-hub' },
           { text: 'OpenCode 配置指南', link: '/cli/opencode' },
           { text: 'OpenClaw 配置说明', link: '/cli/openclaw' }
+        ]
+      },
+      {
+        text: '客户端配置',
+        items: [
+          { text: 'Cherry Studio 配置指南', link: '/client/cherry-studio' }
         ]
       },
       {

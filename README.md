@@ -7,7 +7,8 @@
 ## 文档内容
 
 - 使用指南：平台介绍、接入地址、快速开始、鉴权与安全、SDK 配置、额度与计费
-- CLI 工具配置：CC Switch、Claude Code、Codex、OpenCode、OpenClaw
+- CLI 工具配置：CC Switch、Claude Code、Codex、AIO Coding Hub、OpenCode、OpenClaw
+- 客户端配置：Cherry Studio
 - API 参考：模型列表、聊天补全、错误处理
 - 帮助内容：常见问题和排查建议
 
@@ -39,6 +40,7 @@ http://localhost:5173/
 - `docs/index.md`：首页
 - `docs/guide/*.md`：使用指南
 - `docs/cli/*.md`：CLI 工具配置
+- `docs/client/*.md`：客户端配置
 - `docs/reference/*.md`：API 参考
 - `docs/.vitepress/config.js`：网站标题、导航、侧边栏和搜索配置
 - `docs/public/logo.svg`：站点 logo
