@@ -2,6 +2,8 @@
 
 OpenCode 是一个开源 AI 编程助手，可以在终端里使用。配置木瓜 API 后，你可以通过 OpenAI 兼容接口调用控制台可用模型。
 
+示例里的 `your-api-key` 和 `your-model-id` 是占位内容，复制后请换成控制台里的真实 API Key 和模型 ID。
+
 ## 安装
 
 ### macOS / Linux
@@ -99,7 +101,7 @@ Windows 对应路径是：
 ```json
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "mugua/<MODEL_ID>",
+  "model": "mugua/your-model-id",
   "provider": {
     "mugua": {
       "npm": "@ai-sdk/openai",
@@ -107,11 +109,11 @@ Windows 对应路径是：
       "options": {
         "baseURL": "https://api.mugua.link/v1",
         "setCacheKey": true,
-        "apiKey": "<API_KEY>"
+        "apiKey": "your-api-key"
       },
       "models": {
-        "<MODEL_ID>": {
-          "name": "<MODEL_ID>"
+        "your-model-id": {
+          "name": "your-model-id"
         }
       }
     }
@@ -121,8 +123,8 @@ Windows 对应路径是：
 
 需要替换的地方：
 
-- `<API_KEY>`：替换成木瓜 API 控制台创建的 API Key
-- `<MODEL_ID>`：替换成控制台可用模型 ID
+- `your-api-key`：替换成木瓜 API 控制台创建的 API Key
+- `your-model-id`：替换成控制台可用模型 ID
 
 如果你有多个模型，可以继续在 `models` 里添加。
 

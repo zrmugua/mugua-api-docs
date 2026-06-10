@@ -2,6 +2,8 @@
 
 模型列表接口用于查询当前 API Key 可访问的模型。模型 ID、上下文长度、价格和可用能力以控制台和接口返回为准。
 
+下面示例中的 `your-model-id` 只是展示格式，实际值请以控制台或接口返回为准。
+
 ## 查询模型
 
 ```http
@@ -22,7 +24,7 @@ curl https://api.mugua.link/v1/models \
   "object": "list",
   "data": [
     {
-      "id": "<MODEL_ID>",
+      "id": "your-model-id",
       "object": "model",
       "created": 1760000000,
       "owned_by": "mugua"
@@ -37,7 +39,7 @@ curl https://api.mugua.link/v1/models \
 
 ```json
 {
-  "model": "<MODEL_ID>",
+  "model": "your-model-id",
   "messages": [
     {
       "role": "user",

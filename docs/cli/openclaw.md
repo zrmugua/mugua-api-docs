@@ -2,6 +2,8 @@
 
 OpenClaw 是一个可自托管的 AI 助手/代理工具。配置木瓜 API 后，可以让 OpenClaw 通过 OpenAI Responses 兼容格式调用可用模型。
 
+示例里的 `your-api-key` 和 `your-model-id` 是占位内容，不是固定写法。复制配置后，请替换成控制台里的真实 API Key 和模型 ID。
+
 ## 安装前准备
 
 OpenClaw 官方推荐 Node.js 24，也支持 Node.js 22.14+。Windows 用户可以使用原生 PowerShell 安装，也可以使用 WSL2。
@@ -101,7 +103,7 @@ OpenClaw 接入 OpenAI Responses 兼容接口时，配置里的 `api` 使用：
 "api": "openai-responses"
 ```
 
-下面是最小配置示例。请把 `<API_KEY>` 和 `<MODEL_ID>` 替换成你在木瓜 API 控制台里的真实信息。
+下面是最小配置示例。请把 `your-api-key` 和 `your-model-id` 替换成你在木瓜 API 控制台里的真实信息。
 
 ```json
 {
@@ -110,12 +112,12 @@ OpenClaw 接入 OpenAI Responses 兼容接口时，配置里的 `api` 使用：
     "providers": {
       "mugua": {
         "baseUrl": "https://api.mugua.link/v1",
-        "apiKey": "<API_KEY>",
+        "apiKey": "your-api-key",
         "api": "openai-responses",
         "models": [
           {
-            "id": "<MODEL_ID>",
-            "name": "<MODEL_ID>"
+            "id": "your-model-id",
+            "name": "your-model-id"
           }
         ]
       }
@@ -124,7 +126,7 @@ OpenClaw 接入 OpenAI Responses 兼容接口时，配置里的 `api` 使用：
   "agents": {
     "defaults": {
       "model": {
-        "primary": "mugua/<MODEL_ID>"
+        "primary": "mugua/your-model-id"
       }
     }
   }
@@ -135,9 +137,9 @@ OpenClaw 接入 OpenAI Responses 兼容接口时，配置里的 `api` 使用：
 
 你至少要改三处：
 
-- `apiKey`：改成木瓜 API 控制台创建的 API Key
-- `models[0].id`：改成控制台可用模型 ID
-- `agents.defaults.model.primary`：格式为 `mugua/<MODEL_ID>`
+- 配置里的 `apiKey`：改成木瓜 API 控制台创建的 API Key
+- 模型列表里的 `id` 和 `name`：改成控制台可用模型 ID
+- 默认模型里的 `primary`：改成 `mugua/your-model-id`
 
 如果你的完整配置里启用了 `gateway.auth.token`，也请换成自己的随机 token，不要使用示例值。
 
@@ -156,7 +158,7 @@ OpenClaw 接入 OpenAI Responses 兼容接口时，配置里的 `api` 使用：
 - API Key 是否正确
 - 模型 ID 是否存在
 - `api` 是否为 `openai-responses`
-- `primary` 是否为 `mugua/<MODEL_ID>`
+- `primary` 是否为 `mugua/your-model-id`
 
 ## 验证配置
 
@@ -193,9 +195,9 @@ npm prefix -g
 
 回到木瓜 API 控制台确认模型 ID，然后同步修改：
 
-- `models[0].id`
-- `models[0].name`
-- `agents.defaults.model.primary`
+- 模型列表里的 `id`
+- 模型列表里的 `name`
+- 默认模型里的 `primary`
 
 ### Gateway 没有启动
 

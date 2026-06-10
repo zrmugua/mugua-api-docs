@@ -20,7 +20,7 @@
 检查请求头是否正确：
 
 ```http
-Authorization: Bearer YOUR_API_KEY
+Authorization: Bearer your-api-key
 ```
 
 注意 `Bearer` 后面有一个空格。

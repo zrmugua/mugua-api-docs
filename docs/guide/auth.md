@@ -5,7 +5,7 @@
 ## 请求头
 
 ```http
-Authorization: Bearer YOUR_API_KEY
+Authorization: Bearer your-api-key
 Content-Type: application/json
 ```
 

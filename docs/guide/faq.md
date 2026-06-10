@@ -30,7 +30,7 @@ https://api.mugua.link
 正确格式：
 
 ```http
-Authorization: Bearer <API_KEY>
+Authorization: Bearer your-api-key
 ```
 
 ## 为什么提示模型不存在

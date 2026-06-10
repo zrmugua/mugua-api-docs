@@ -2,6 +2,8 @@
 
 聊天补全接口用于多轮对话、文本生成、内容改写、信息抽取等场景。
 
+示例里的 `your-model-id` 是占位内容，实际调用时请替换成控制台可用模型 ID。
+
 ## 请求地址
 
 ```http
@@ -46,7 +48,7 @@ curl https://api.mugua.link/v1/chat/completions \
   -H "Authorization: Bearer $MUGUA_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "<MODEL_ID>",
+    "model": "your-model-id",
     "messages": [
       {
         "role": "user",
@@ -64,7 +66,7 @@ curl https://api.mugua.link/v1/chat/completions \
   "id": "chatcmpl-example",
   "object": "chat.completion",
   "created": 1760000000,
-  "model": "<MODEL_ID>",
+  "model": "your-model-id",
   "choices": [
     {
       "index": 0,
@@ -89,7 +91,7 @@ curl https://api.mugua.link/v1/chat/completions \
 
 ```json
 {
-  "model": "<MODEL_ID>",
+  "model": "your-model-id",
   "messages": [
     {
       "role": "user",

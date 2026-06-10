@@ -2,6 +2,8 @@
 
 木瓜 API 兼容常见 OpenAI SDK 的调用方式。你只需要把 `baseURL` 指向木瓜 API，并使用自己的 API Key。
 
+示例里的 `your-model-id` 只是占位内容，请替换成木瓜 API 控制台里可用的模型 ID。
+
 ## Node.js
 
 安装 SDK：
@@ -21,7 +23,7 @@ const client = new OpenAI({
 })
 
 const completion = await client.chat.completions.create({
-  model: '<MODEL_ID>',
+  model: 'your-model-id',
   messages: [
     { role: 'user', content: '你好，请介绍一下木瓜 API' }
   ]
@@ -50,7 +52,7 @@ client = OpenAI(
 )
 
 completion = client.chat.completions.create(
-    model="<MODEL_ID>",
+    model="your-model-id",
     messages=[
         {"role": "user", "content": "你好，请介绍一下木瓜 API"}
     ],
@@ -65,7 +67,7 @@ print(completion.choices[0].message.content)
 
 ```js
 const stream = await client.chat.completions.create({
-  model: '<MODEL_ID>',
+  model: 'your-model-id',
   messages: [
     { role: 'user', content: '写一段简短欢迎语' }
   ],

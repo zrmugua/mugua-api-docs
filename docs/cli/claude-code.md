@@ -2,6 +2,8 @@
 
 Claude Code 是 Anthropic 提供的命令行开发工具。配置完成后，可以在终端里通过木瓜 API 使用 Claude Code。
 
+示例里的 `your-api-key` 是占位内容，请替换成你在木瓜 API 控制台创建的真实 API Key。
+
 ## 安装
 
 使用 npm 安装：
@@ -43,7 +45,7 @@ macOS / Linux：
 ```json
 {
   "env": {
-    "ANTHROPIC_AUTH_TOKEN": "<API_KEY>",
+    "ANTHROPIC_AUTH_TOKEN": "your-api-key",
     "ANTHROPIC_BASE_URL": "https://api.mugua.link",
     "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
   },
@@ -51,11 +53,11 @@ macOS / Linux：
     "allow": [],
     "deny": []
   },
-  "apiKeyHelper": "echo '<API_KEY>'"
+  "apiKeyHelper": "echo 'your-api-key'"
 }
 ```
 
-请把 `<API_KEY>` 替换成你在木瓜 API 控制台创建的 API Key。
+请把 `your-api-key` 替换成你在木瓜 API 控制台创建的 API Key。
 
 ## 配置方式二：终端临时配置
 
@@ -65,7 +67,7 @@ PowerShell：
 
 ```powershell
 $env:ANTHROPIC_BASE_URL="https://api.mugua.link"
-$env:ANTHROPIC_AUTH_TOKEN="<API_KEY>"
+$env:ANTHROPIC_AUTH_TOKEN="your-api-key"
 claude
 ```
 
@@ -73,7 +75,7 @@ macOS / Linux：
 
 ```bash
 export ANTHROPIC_BASE_URL="https://api.mugua.link"
-export ANTHROPIC_AUTH_TOKEN="<API_KEY>"
+export ANTHROPIC_AUTH_TOKEN="your-api-key"
 claude
 ```
 

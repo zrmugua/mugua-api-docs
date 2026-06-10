@@ -5,6 +5,8 @@
 - `baseURL`：`https://api.mugua.link/v1`
 - `apiKey`：在控制台创建的 API Key
 
+文档里的 `your-api-key` 和 `your-model-id` 是示例占位内容，复制代码后请替换成控制台里的真实 API Key 和模型 ID。
+
 ## 1. 登录控制台
 
 打开：
@@ -22,13 +24,13 @@ API Key 只会用于服务端调用，请不要放在浏览器前端代码、公
 推荐用环境变量保存：
 
 ```bash
-export MUGUA_API_KEY="<API_KEY>"
+export MUGUA_API_KEY="your-api-key"
 ```
 
 PowerShell 可以这样写：
 
 ```powershell
-$env:MUGUA_API_KEY="<API_KEY>"
+$env:MUGUA_API_KEY="your-api-key"
 ```
 
 ## 3. 发送一次请求
@@ -40,7 +42,7 @@ curl https://api.mugua.link/v1/chat/completions \
   -H "Authorization: Bearer $MUGUA_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "<MODEL_ID>",
+    "model": "your-model-id",
     "messages": [
       {
         "role": "user",
