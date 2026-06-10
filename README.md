@@ -1,6 +1,15 @@
 # 木瓜 API 文档站
 
-这是木瓜 API 的 VitePress 使用文档站。
+这是木瓜 API 的官方使用文档站，基于 VitePress 构建。
+
+文档面向需要接入木瓜 API 的开发者，覆盖平台介绍、快速接入、鉴权安全、SDK 调用、CLI 工具配置、API 参考和常见问题。
+
+## 文档内容
+
+- 使用指南：平台介绍、接入地址、快速开始、鉴权与安全、SDK 配置、额度与计费
+- CLI 工具配置：CC Switch、Claude Code、Codex、OpenCode、OpenClaw
+- API 参考：模型列表、聊天补全、错误处理
+- 帮助内容：常见问题和排查建议
 
 ## 本地启动
 
@@ -25,43 +34,17 @@ npm run docs:dev
 http://localhost:5173/
 ```
 
-## 常改的文件
+## 项目结构
 
 - `docs/index.md`：首页
-- `docs/guide/intro.md`：平台介绍
-- `docs/guide/base-url.md`：接入地址
-- `docs/guide/start.md`：快速开始
-- `docs/guide/auth.md`：鉴权与安全
-- `docs/guide/sdk.md`：SDK 配置
-- `docs/guide/billing.md`：额度与计费
-- `docs/guide/faq.md`：常见问题
-- `docs/cli/*.md`：CLI 工具安装配置、CC Switch、OpenCode 和 OpenClaw 配置
+- `docs/guide/*.md`：使用指南
+- `docs/cli/*.md`：CLI 工具配置
 - `docs/reference/*.md`：API 参考
 - `docs/.vitepress/config.js`：网站标题、导航、侧边栏和搜索配置
-- `docs/public/logo.svg`：网站 logo
+- `docs/public/logo.svg`：站点 logo
 
-## 打包
+## 构建
 
 ```bash
 npm run docs:build
 ```
-
-## 部署建议
-
-推荐使用 Cloudflare Pages 部署。
-
-部署参数：
-
-```text
-Build command: npm run docs:build
-Build output directory: docs/.vitepress/dist
-Node.js version: 20 或更高
-```
-
-部署流程：
-
-1. 把项目推送到 GitHub。
-2. 在 Cloudflare Pages 新建项目。
-3. 连接 GitHub 仓库。
-4. 按上面的部署参数填写构建设置。
-5. 部署完成后绑定自己的文档域名。
