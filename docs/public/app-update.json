@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "appName": "木瓜 API",
+  "packageName": "com.mugua.api",
+  "latestVersionCode": 1,
+  "latestVersionName": "1.0",
+  "minSupportedVersionCode": 1,
+  "releaseDate": "2026-07-05",
+  "downloadUrl": "https://api.mugua.link/download/mugua-api.apk",
+  "update": {
+    "title": "发现新版本",
+    "forceTitle": "需要更新后继续使用",
+    "content": "为了保证功能正常，请更新到最新版本。",
+    "changelog": [
+      "当前版本为首个测试版本",
+      "支持登录、聊天、生图、密钥管理和使用日志",
+      "支持本地保存聊天记录与基础账户信息展示"
+    ]
+  },
+  "announcement": {
+    "enabled": false,
+    "id": "notice-2026-07-05",
+    "level": "info",
+    "title": "公告",
+    "content": "",
+    "showOnce": true
+  }
+}
