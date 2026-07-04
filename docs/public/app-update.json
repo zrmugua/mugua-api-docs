@@ -4,7 +4,7 @@
   "packageName": "com.mugua.api",
   "latestVersionCode": 2,
   "latestVersionName": "1.1",
-  "minSupportedVersionCode": 1,
+  "minSupportedVersionCode": 2,
   "releaseDate": "2026-07-05",
   "downloadUrl": "https://api.mugua.link/download/mugua-api.apk",
   "update": {
