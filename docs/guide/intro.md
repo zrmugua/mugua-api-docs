@@ -30,5 +30,5 @@ https://api.mugua.link/v1
 2. [鉴权与安全](/guide/auth)
 3. [SDK 配置](/guide/sdk)
 4. [额度与计费](/guide/billing)
-5. [CLI 工具配置](/cli/cc-switch)
+5. [工具配置](/cli/cc-switch)
 6. [API 参考](/reference/models)

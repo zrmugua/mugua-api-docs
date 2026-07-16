@@ -15,9 +15,9 @@ export default {
 
     nav: [
       { text: '指南', link: '/guide/start' },
-      { text: 'CLI 工具', link: '/cli/cc-switch' },
+      { text: '工具配置', link: '/cli/cc-switch' },
       { text: '客户端', link: '/client/cherry-studio' },
-      { text: 'API 参考', link: '/reference/models' },
+      { text: 'API 参考', link: '/reference/protocols' },
       { text: '常见问题', link: '/guide/faq' },
       { text: '控制台', link: 'https://api.mugua.link' }
     ],
@@ -35,12 +35,17 @@ export default {
         ]
       },
       {
-        text: 'CLI 工具配置',
+        text: '配置管理工具',
         items: [
           { text: 'CC Switch 统一配置', link: '/cli/cc-switch' },
+          { text: 'AIO Coding Hub 配置指南', link: '/cli/aio-coding-hub' }
+        ]
+      },
+      {
+        text: '命令行工具',
+        items: [
           { text: 'Claude Code 安装配置', link: '/cli/claude-code' },
           { text: 'Codex 安装配置', link: '/cli/codex' },
-          { text: 'AIO Coding Hub 配置指南', link: '/cli/aio-coding-hub' },
           { text: 'OpenCode 配置指南', link: '/cli/opencode' },
           { text: 'OpenClaw 配置说明', link: '/cli/openclaw' }
         ]
@@ -54,8 +59,12 @@ export default {
       {
         text: 'API 参考',
         items: [
+          { text: '接口协议对照', link: '/reference/protocols' },
           { text: '模型列表', link: '/reference/models' },
           { text: '聊天补全', link: '/reference/chat-completions' },
+          { text: 'Responses API', link: '/reference/responses' },
+          { text: 'Anthropic Messages', link: '/reference/anthropic-messages' },
+          { text: '流式输出', link: '/reference/streaming' },
           { text: '错误处理', link: '/reference/errors' }
         ]
       },

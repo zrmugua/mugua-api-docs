@@ -38,9 +38,13 @@ Claude Code 通常使用不带 `/v1` 的地址。具体配置可查看 [Claude C
 | --- | --- |
 | 模型列表 | `GET /v1/models` |
 | 聊天补全 | `POST /v1/chat/completions` |
+| Responses API | `POST /v1/responses` |
+| Anthropic Messages | `POST /v1/messages` |
 
 完整请求示例：
 
 ```text
 https://api.mugua.link/v1/chat/completions
 ```
+
+不同工具使用的协议和 Base URL 不完全相同，配置前可以先查看 [接口协议对照](/reference/protocols)。

@@ -48,10 +48,9 @@ macOS / Linux：
 model_provider = "mugua"
 model = "your-model-id"
 model_reasoning_effort = "high"
-disable_response_storage = true
 
 [model_providers.mugua]
-name = "mugua"
+name = "木瓜 API"
 base_url = "https://api.mugua.link/v1"
 wire_api = "responses"
 requires_openai_auth = true
@@ -65,11 +64,13 @@ requires_openai_auth = true
 
 ```json
 {
-  "OPENAI_API_KEY": "echo your-api-key"
+  "OPENAI_API_KEY": "your-api-key"
 }
 ```
 
-请把 `your-api-key` 替换成你在木瓜 API 控制台创建的 API Key。
+请把 `your-api-key` 替换成你在木瓜 API 控制台创建的 API Key。这里直接填写 Key，不要在前面添加 `echo`。
+
+`auth.json` 包含你的访问凭据，请不要上传到公开仓库或发送给其他人。
 
 ## 验证配置
 
@@ -86,7 +87,7 @@ codex
 如果提示鉴权失败，请检查：
 
 - `auth.json` 里的 API Key 是否正确
-- `OPENAI_API_KEY` 前后是否有多余空格
+- API Key 前后是否有多余空格
 - API Key 是否仍然有效
 
 如果提示模型不可用，请回到木瓜 API 控制台确认模型 ID。

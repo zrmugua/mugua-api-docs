@@ -100,3 +100,6 @@ curl https://api.mugua.link/v1/chat/completions \
   ],
   "stream": true
 }
+```
+
+完整的 cURL、Node.js 和 Python 流式示例请查看 [流式输出](/reference/streaming)。
