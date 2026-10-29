@@ -1,50 +1,51 @@
-# 接入地址
+# 接入地址与协议
 
-木瓜 API 提供控制台入口和 OpenAI 兼容 API 入口。配置 SDK、CLI 工具或第三方客户端时，最常用的是 `/v1` 接口地址。
+填写地址前，先确认工具需要的是 **Base URL** 还是**完整接口地址**。SDK 通常会在 Base URL 后追加路径。
 
-## 控制台
+## 地址速查
 
-```text
-https://api.mugua.link
-```
+| 使用场景 | 填写内容 | 最终请求 |
+| --- | --- | --- |
+| 控制台 | `https://api.mugua.link` | 网页 |
+| OpenAI SDK：Chat Completions | `https://api.mugua.link/v1` | `POST /v1/chat/completions` |
+| OpenAI SDK：Responses、Codex | `https://api.mugua.link/v1` | `POST /v1/responses` |
+| Claude Code | `https://api.mugua.link` | `POST /v1/messages` |
+| Anthropic Python / TypeScript SDK | `https://api.mugua.link` | `POST /v1/messages` |
+| OpenCode | `https://api.mugua.link/v1` | 由 AI SDK 包决定协议 |
+| OpenClaw | `https://api.mugua.link/v1` | 由 `api` 字段决定协议 |
 
-控制台用于管理 API Key、查看可用模型、检查余额额度和处理账号相关操作。
+第三方客户端可能提供“完整端点”或自动补全版本路径的选项。检查客户端展示的最终请求地址，以工具专页和实际请求日志为准。
 
-## API Base URL
+## 线路选择
 
-```text
-https://api.mugua.link/v1
-```
+木瓜 API 提供多条访问线路，使用同一套账号和令牌。替换文中示例的域名即可切换：
 
-适用于：
+| 线路 | 域名 | 说明 |
+| --- | --- | --- |
+| 主站 | `https://api.mugua.link` | 境内境外独立加速，默认推荐 |
+| CF 站 | `https://api.668851.xyz` | Cloudflare 全球加速 |
+| 加速站 | `https://api-fast.668851.xyz` | 香港 CN2 加速，**生图推荐使用** |
 
-- OpenAI SDK
-- Codex
-- OpenCode
-- OpenClaw
-- 其它 OpenAI 兼容客户端
+切换线路时只替换域名，路径规则不变：OpenAI 兼容工具仍填写 `https://域名/v1`，Claude Code 和 Anthropic SDK 仍填写站点根地址。某条线路连接不稳定时，可以换一条再试。线路列表以控制台首页展示为准。
 
-## Claude Code Base URL
+## 三种生成协议
 
-```text
-https://api.mugua.link
-```
+| 协议 | 完整地址 | 主要输入 |
+| --- | --- | --- |
+| Chat Completions | `https://api.mugua.link/v1/chat/completions` | `messages` |
+| Responses API | `https://api.mugua.link/v1/responses` | `input` |
+| Anthropic Messages | `https://api.mugua.link/v1/messages` | `messages`、`max_tokens` |
 
-Claude Code 通常使用不带 `/v1` 的地址。具体配置可查看 [Claude Code 安装配置](/cli/claude-code)。
+模型列表使用 `GET https://api.mugua.link/v1/models`。图片生成使用 `POST /v1/images/generations`，见[图片生成](/reference/images)。
 
-## 常见路径
+## 检查路径拼接
 
-| 用途 | 地址 |
-| --- | --- |
-| 模型列表 | `GET /v1/models` |
-| 聊天补全 | `POST /v1/chat/completions` |
-| Responses API | `POST /v1/responses` |
-| Anthropic Messages | `POST /v1/messages` |
+正确的完整地址应只有一层 `/v1`。出现 `/v1/v1/messages`，通常是工具自动追加版本前缀后又重复填写了 `/v1`。
 
-完整请求示例：
+把完整的 `/chat/completions` 或 `/responses` 地址填进 SDK 的 Base URL，也会产生重复路径。优先复制上表中对应工具的 Base URL。
 
-```text
-https://api.mugua.link/v1/chat/completions
-```
+## 确认模型能力
 
-不同工具使用的协议和 Base URL 不完全相同，配置前可以先查看 [接口协议对照](/reference/protocols)。
+接口地址、模型 ID 和令牌分组需要一起匹配。模型列表返回某个 ID，说明当前 Key 所在分组能看到该模型（见[分组与令牌](/guide/groups)）；上下文长度、工具调用、图片输入及协议权限还需查看控制台或通过目标功能的小请求验证。
+
+下一步：[接口协议对照](/reference/protocols) · [工具接入](/guide/tools) · [404 排查](/guide/troubleshooting#路径与协议)

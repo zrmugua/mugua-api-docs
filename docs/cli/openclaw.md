@@ -1,109 +1,62 @@
+---
+description: 配置 OpenClaw 自定义模型提供商、凭据环境变量与默认模型。
+lastVerified: "2026-10-29"
+---
 # OpenClaw 配置说明
 
-OpenClaw 是一个可自托管的 AI 助手/代理工具。配置木瓜 API 后，可以让 OpenClaw 通过 OpenAI Responses 兼容格式调用可用模型。
+OpenClaw 是一个可自托管的 AI 助手。下面通过自定义提供商接入木瓜 API 的 Responses 接口。
 
-示例里的 `your-api-key` 和 `your-model-id` 是占位内容，不是固定写法。复制配置后，请替换成控制台里的真实 API Key 和模型 ID。
+## 安装环境
 
-## 安装前准备
+OpenClaw 更新较快，请先按[官方安装页](https://docs.openclaw.ai/install)确认当前版本的 Node.js 要求。核对时，官方要求 Node.js 24.16.0+（24.x）或 26.1.0+，出于安全考虑建议 24.22.1+ 或 26.12.1+，并优先推荐 Node 26。安装脚本会自动处理 Node.js 依赖。
 
-OpenClaw 官方推荐 Node.js 24，也支持 Node.js 22.14+。Windows 用户可以使用原生 PowerShell 安装，也可以使用 WSL2。
+推荐使用官方安装脚本：
 
-检查 Node.js 版本：
+::: code-group
 
-```bash
-node --version
-```
-
-## 安装
-
-macOS / Linux / WSL2：
-
-```bash
+```bash [macOS / Linux / WSL2]
 curl -fsSL https://openclaw.ai/install.sh | bash
 ```
 
-Windows PowerShell：
-
-```powershell
+```powershell [Windows PowerShell]
 iwr -useb https://openclaw.ai/install.ps1 | iex
 ```
 
-如果你已经自己管理 Node.js，也可以用 npm 安装：
+```bash [npm]
+npm install -g openclaw@latest --allow-scripts=openclaw
+```
+
+:::
+
+`--allow-scripts=openclaw` 适用于 npm 11.16 及以上版本，npm 11.15 及更早版本去掉该参数。安装后运行初始化并安装后台服务：
 
 ```bash
-npm install -g openclaw@latest
 openclaw onboard --install-daemon
 ```
 
-## 安装后检查
+已有安装先备份配置，并查看上游更新说明。
 
-安装完成后运行：
+## 设置凭据
 
-```bash
-openclaw --version
-openclaw doctor
-openclaw gateway status
-openclaw dashboard
+::: code-group
+
+```bash [macOS / Linux]
+export MUGUA_API_KEY="your-api-key"
 ```
 
-常用检查命令说明：
-
-- `openclaw --version`：确认命令可用
-- `openclaw doctor`：检查配置问题
-- `openclaw gateway status`：检查 Gateway 是否运行
-- `openclaw dashboard`：打开控制台页面
-
-## 配置文件位置
-
-OpenClaw 的主要配置文件是：
-
-```text
-openclaw.json
+```powershell [Windows PowerShell]
+$env:MUGUA_API_KEY = "your-api-key"
 ```
 
-推荐放在用户目录下：
+:::
 
-```text
-~/.openclaw/openclaw.json
-```
+后台 Gateway 服务需要在自己的运行环境中读取变量。终端中设置的变量不一定会传给已安装的系统服务，请按官方[环境变量说明](https://docs.openclaw.ai/gateway/configuration/environment-variables)配置持久凭据。
 
-Windows 原生环境可以放在：
+## 合并模型配置
 
-```text
-C:\Users\你的用户名\.openclaw\openclaw.json
-```
+默认配置文件为 `~/.openclaw/openclaw.json`，Windows 对应 `%USERPROFILE%\.openclaw\openclaw.json`。自定义路径可使用 `OPENCLAW_CONFIG_PATH`。
 
-如果你想强制指定配置文件路径，可以设置环境变量 `OPENCLAW_CONFIG_PATH`。
-
-PowerShell 示例：
-
-```powershell
-$env:OPENCLAW_CONFIG_PATH="C:\path\to\openclaw.json"
-openclaw doctor
-```
-
-macOS / Linux 示例：
-
-```bash
-export OPENCLAW_CONFIG_PATH="$HOME/.openclaw/openclaw.json"
-openclaw doctor
-```
-
-## 木瓜 API 配置示例
-
-木瓜 API 的 OpenAI 兼容接口地址：
-
-```text
-https://api.mugua.link/v1
-```
-
-OpenClaw 接入 OpenAI Responses 兼容接口时，配置里的 `api` 使用：
-
-```json
-"api": "openai-responses"
-```
-
-下面是最小配置示例。请把 `your-api-key` 和 `your-model-id` 替换成你在木瓜 API 控制台里的真实信息。
+备份已有配置，将以下模型和默认选择合并进去：
 
 ```json
 {
@@ -112,12 +65,16 @@ OpenClaw 接入 OpenAI Responses 兼容接口时，配置里的 `api` 使用：
     "providers": {
       "mugua": {
         "baseUrl": "https://api.mugua.link/v1",
-        "apiKey": "your-api-key",
+        "apiKey": "${MUGUA_API_KEY}",
         "api": "openai-responses",
         "models": [
           {
             "id": "your-model-id",
-            "name": "your-model-id"
+            "name": "your-model-id",
+            "reasoning": true,
+            "input": ["text", "image"],
+            "contextWindow": 200000,
+            "maxTokens": 32000
           }
         ]
       }
@@ -133,79 +90,62 @@ OpenClaw 接入 OpenAI Responses 兼容接口时，配置里的 `api` 使用：
 }
 ```
 
-## 必须修改的地方
+替换所有 `your-model-id`。OpenClaw 推荐使用 GPT 系列模型，速度和稳定性较好；令牌分组需要提供所选模型，见[分组与令牌](/guide/groups)。`${MUGUA_API_KEY}` 是 OpenClaw 的环境变量引用语法，应保留。Key 从实际运行 Gateway 的环境读取。
 
-你至少要改三处：
+模型条目中只有 `id` 必填：
 
-- 配置里的 `apiKey`：改成木瓜 API 控制台创建的 API Key
-- 模型列表里的 `id` 和 `name`：改成控制台可用模型 ID
-- 默认模型里的 `primary`：改成 `mugua/your-model-id`
+| 字段 | 说明 |
+| --- | --- |
+| `reasoning` | 是否为推理模型，省略时为 `false` |
+| `input` | 支持的输入类型，纯文本模型填 `["text"]`，省略时为 `["text"]` |
+| `contextWindow` / `maxTokens` | 上下文与输出上限，示例数值仅为占位，按模型实际能力填写 |
 
-如果你的完整配置里启用了 `gateway.auth.token`，也请换成自己的随机 token，不要使用示例值。
+`models.mode` 为 `merge`（默认）时，这些配置与 OpenClaw 内置的模型目录合并；设为 `replace` 则只使用配置中列出的模型。
 
-## 使用 Codex 辅助生成配置
+## 选择协议
 
-如果你已经配置好了 Codex，也可以让 Codex 帮你把 `.codex` 里的木瓜 API 配置整理成 OpenClaw 配置。
+| 模型支持的接口 | `api` 字段 |
+| --- | --- |
+| Responses | `openai-responses` |
+| Chat Completions | `openai-completions` |
 
-打开 Codex 后，可以输入：
+省略 `api` 时默认使用 `openai-completions`。只有模型支持 `/v1/responses` 时才设置 `openai-responses`，GPT 系列建议使用它。模型与渠道还需要支持助手所需的工具调用和流式能力。
 
-```text
-请把用户目录下 .codex 的 API 配置写入 OpenClaw 的 openclaw.json，注意使用 openai-responses 格式，Base URL 使用 https://api.mugua.link/v1。
-```
-
-生成后仍然建议手动检查：
-
-- API Key 是否正确
-- 模型 ID 是否存在
-- `api` 是否为 `openai-responses`
-- `primary` 是否为 `mugua/your-model-id`
-
-## 验证配置
-
-保存 `openclaw.json` 后运行：
+## 验证完整链路
 
 ```bash
 openclaw doctor
+openclaw models list
 openclaw models status
-openclaw models list --provider mugua
+```
+
+`doctor` 检查配置，`models list` 确认 `mugua/your-model-id` 出现在模型清单中，`models status` 显示当前默认模型与凭据概况。`models status` 本身不会调用模型。
+
+需要真正测试一次上游调用时，先停止 Gateway 再探测：
+
+```bash
+openclaw gateway stop
+openclaw models status --probe --probe-provider mugua
 openclaw gateway restart
+openclaw gateway status
 openclaw dashboard
 ```
 
-如果 `models list` 能看到木瓜 API 配置的模型，并且 dashboard 能正常打开，就说明基础配置已经完成。
+`--probe` 会发送真实请求并产生少量消耗。最后在 Dashboard 发送测试消息，并在木瓜控制台“使用日志”中核对本次调用。
 
-## 常见排查
+切换默认模型也可以用命令完成：`openclaw models set mugua/your-model-id`。
 
-### openclaw 命令不存在
+## 常见问题
 
-检查 Node.js 和全局 npm bin 路径：
+- 缺少凭据：检查 Gateway 服务的环境变量，而不只是当前终端。
+- 模型不可用：同步检查提供商模型列表中的 `id` 和默认模型中的 `mugua/模型ID`。
+- 修改无效：确认实际配置文件路径，检查已有认证配置和模型覆盖，重启 Gateway。
+- 提示无可用渠道：令牌分组不提供该模型，修改分组或改用 `auto`。
+- Gateway 运行但生成失败：查看错误体，按[故障排查](/guide/troubleshooting)检查上游。
+- 配置字段报错：运行 `openclaw config schema` 查看当前版本支持的完整字段。
 
-```bash
-node --version
-npm prefix -g
-```
+## 官方参考
 
-如果是 macOS / Linux，确认全局 bin 目录已经加入 `PATH`。
-
-### 提示鉴权失败
-
-检查 `apiKey` 是否复制完整，尤其注意不要带入空格、换行或不可见字符。
-
-### 提示模型不存在
-
-回到木瓜 API 控制台确认模型 ID，然后同步修改：
-
-- 模型列表里的 `id`
-- 模型列表里的 `name`
-- 默认模型里的 `primary`
-
-### Gateway 没有启动
-
-可以尝试：
-
-```bash
-openclaw gateway restart
-openclaw gateway status
-```
-
-如果仍然失败，先运行 `openclaw doctor` 看具体错误。
+- [自定义模型提供商](https://docs.openclaw.ai/gateway/config-tools/custom-providers)
+- [models 命令](https://docs.openclaw.ai/cli/models)
+- [环境变量与凭据引用](https://docs.openclaw.ai/gateway/configuration/environment-variables)

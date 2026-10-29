@@ -1,23 +1,33 @@
 # 模型列表
 
-模型列表接口用于查询当前 API Key 可访问的模型。模型 ID、上下文长度、价格和可用能力以控制台和接口返回为准。
+查询当前 API Key 可见的模型 ID。返回结果由令牌所属[分组](/guide/groups)决定。具体价格、计费方式和所属分组可在控制台“模型广场”（需登录）查看。
 
-下面示例中的 `your-model-id` 只是展示格式，实际值请以控制台或接口返回为准。
-
-## 查询模型
+## 请求
 
 ```http
 GET https://api.mugua.link/v1/models
+Authorization: Bearer your-api-key
 ```
 
-请求示例：
+::: code-group
 
-```bash
-curl https://api.mugua.link/v1/models \
+```bash [macOS / Linux]
+curl --fail-with-body --silent --show-error \
+  https://api.mugua.link/v1/models \
   -H "Authorization: Bearer $MUGUA_API_KEY"
 ```
 
-## 响应示例
+```powershell [Windows PowerShell]
+$headers = @{ Authorization = "Bearer $env:MUGUA_API_KEY" }
+$result = Invoke-RestMethod -Uri "https://api.mugua.link/v1/models" -Headers $headers
+$result.data | Select-Object id
+```
+
+:::
+
+## 响应结构
+
+下面是用于说明结构的简化示例，`your-model-id` 为占位值：
 
 ```json
 {
@@ -25,35 +35,27 @@ curl https://api.mugua.link/v1/models \
   "data": [
     {
       "id": "your-model-id",
-      "object": "model",
-      "created": 1760000000,
-      "owned_by": "mugua"
+      "object": "model"
     }
   ]
 }
 ```
 
-## 使用模型
+读取 `data[].id` 并原样填入生成请求的 `model` 字段。接口可能返回其他字段，客户端应保留向前兼容性。
 
-把接口返回的 `id` 填到请求里的 `model` 字段：
+## 选择模型
 
-```json
-{
-  "model": "your-model-id",
-  "messages": [
-    {
-      "role": "user",
-      "content": "你好"
-    }
-  ]
-}
-```
+| 检查项 | 确认方式 |
+| --- | --- |
+| 当前 Key 是否有权限 | 模型列表、令牌的分组与模型限制 |
+| 价格与计费方式 | 模型广场，按量或按次 |
+| 是否支持目标协议 | 控制台能力说明、目标协议最小请求 |
+| 工具调用和流式输出 | 使用对应功能的小请求验证 |
+| 图片等多模态输入 | 查看模型与渠道能力 |
+| 上下文、速度和价格 | 控制台说明与实际任务评估 |
 
-## 选择建议
+模型 ID 可能包含版本或渠道后缀，请完整复制。列表为空时，先检查令牌的分组和模型限制。模型上线与下线会在控制台公告中通知，下线的模型 ID 需要及时从工具配置中替换。
 
-选择模型时关注这些信息：
+## 在工具中填写
 
-- 任务类型是否匹配
-- 上下文长度是否足够
-- 响应速度是否满足产品体验
-- 成本是否适合业务规模
+部分工具使用 `提供商ID/模型ID` 表示默认模型，例如 `mugua/your-model-id`。这里的 `mugua/` 是工具配置中的提供商前缀，HTTP 请求体的 `model` 通常使用原始模型 ID。具体格式见[工具接入](/guide/tools)。

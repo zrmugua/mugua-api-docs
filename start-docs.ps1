@@ -1,14 +1,27 @@
 $ErrorActionPreference = 'Stop'
 
-$root = Split-Path -Parent $MyInvocation.MyCommand.Path
-$nodeRoot = Join-Path $root 'work\node'
-$nodeDir = Get-ChildItem -LiteralPath $nodeRoot -Directory | Select-Object -First 1
+$docsRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+$npmCommand = Get-Command npm.cmd -ErrorAction SilentlyContinue
 
-if (!$nodeDir) {
-  throw '没有找到便携 Node.js。请先安装依赖，或让 Codex 重新初始化项目。'
+if (!$npmCommand) {
+  $portableRoot = Join-Path $docsRoot 'work\node'
+  if (Test-Path -LiteralPath $portableRoot) {
+    $portableNode = Get-ChildItem -LiteralPath $portableRoot -Directory |
+      Sort-Object Name -Descending | Select-Object -First 1
+    if ($portableNode) {
+      $env:PATH = "$($portableNode.FullName);$env:PATH"
+      $npmCommand = Get-Command npm.cmd -ErrorAction SilentlyContinue
+    }
+  }
 }
 
-$env:PATH = "$($nodeDir.FullName);$env:PATH"
-$env:npm_config_cache = Join-Path $root 'work\npm-cache'
+if (!$npmCommand) {
+  throw '请安装 Node.js 24 LTS，然后在项目目录运行 npm ci。'
+}
 
-& (Join-Path $nodeDir.FullName 'npm.cmd') run docs:dev
+if (!(Test-Path -LiteralPath (Join-Path $docsRoot 'node_modules\vitepress'))) {
+  throw '请先在项目目录运行 npm ci 安装文档站依赖。'
+}
+
+& $npmCommand.Source --prefix $docsRoot run docs:dev
+exit $LASTEXITCODE

@@ -1,153 +1,98 @@
+---
+description: 将木瓜 API 配置为 AIO Coding Hub 上游，并验证本机网关和实际调用。
+lastVerified: "2026-10-29"
+---
 # AIO Coding Hub 配置指南
 
-AIO Coding Hub 是一个本地 AI CLI 统一网关，可以让 Claude Code、Codex、Gemini CLI 等工具的请求走同一个本机入口。配置木瓜 API 后，可以把木瓜 API 作为上游供应商接入 AIO Coding Hub，再由 AIO 统一代理到各个 CLI 工具。
+AIO Coding Hub 在本机运行网关，让 Claude Code、Codex 和 Gemini CLI 的请求走同一个入口，并管理上游、请求路由和调用记录。接入链路如下：
 
-示例里的 `your-api-key` 和 `your-model-id` 是占位内容，复制后请换成木瓜 API 控制台里的真实 API Key 和模型 ID。
-
-## 适合什么场景
-
-如果你只使用一个 CLI 工具，直接看对应工具文档会更简单：
-
-- [Claude Code 安装配置](/cli/claude-code)
-- [Codex 安装配置](/cli/codex)
-- [OpenCode 配置指南](/cli/opencode)
-
-如果你同时使用多个 CLI，或者想统一管理上游、Failover、用量统计和请求日志，可以使用 AIO Coding Hub。
+```text
+开发工具 → AIO 本机网关 → 木瓜 API → 目标模型
+```
 
 ## 下载安装
 
-项目地址：
+| 系统 | 安装方式 |
+| --- | --- |
+| Windows | [Releases](https://github.com/dyndynjyxa/aio-coding-hub/releases) 中的 `.msi`（支持自动更新）或 `-portable.zip` |
+| macOS | Homebrew，或 Releases 中的 `.zip` |
+| Linux | Releases 中的 `.deb`、`.AppImage`，或 AUR 包 `aio-coding-hub-bin` |
 
-```text
-https://github.com/dyndynjyxa/aio-coding-hub
-```
-
-下载地址：
-
-```text
-https://github.com/dyndynjyxa/aio-coding-hub/releases
-```
-
-按系统选择安装包：
-
-- Windows：`.msi` 或便携版压缩包
-- macOS：按 Intel / Apple Silicon 选择对应压缩包
-- Linux：`.deb`、AppImage 或 Wayland AppImage
-
-Linux Arch 用户也可以使用 AUR：
+macOS 使用 Homebrew：
 
 ```bash
-paru -S aio-coding-hub-bin
+brew tap dyndynjyxa/aio-coding-hub
+brew install --cask aio-coding-hub
 ```
 
-## 添加木瓜 API 上游
+当前支持范围和安装要求见[项目 README](https://github.com/dyndynjyxa/aio-coding-hub)。
 
-启动 AIO Coding Hub 后，进入供应商页面，添加一个新的上游供应商。
+## 添加上游
 
-推荐填写：
+在供应商页面创建木瓜 API 上游。字段名称和可选协议可能随版本变化，按目标 CLI 和供应商类型填写：
 
-| 配置项 | 填写内容 |
+| 配置 | 内容 |
 | --- | --- |
 | 名称 | `木瓜 API` |
-| Base URL | `https://api.mugua.link/v1` |
-| 鉴权方式 | API Key |
-| API Key | `your-api-key` |
+| API Key | 控制台创建的令牌，分组需提供目标模型（见[分组与令牌](/guide/groups)） |
+| OpenAI 兼容 Base URL | `https://api.mugua.link/v1` |
+| Anthropic Base URL | `https://api.mugua.link` |
+| 模型 | 支持目标协议的模型 ID |
 
-如果页面支持多个 Base URL，只填一个即可：
+最终请求应落到 `/v1/chat/completions`、`/v1/responses` 或 `/v1/messages`。网关可能自动拼接路径，保存后需要通过日志确认实际地址。
 
-```text
-https://api.mugua.link/v1
-```
-
-保存后启用该供应商。
+需要备用线路时，可以用同一个令牌再添加 CF 站 `https://api.668851.xyz` 或加速站 `https://api-fast.668851.xyz` 作为上游，见[线路选择](/guide/base-url#线路选择)。
 
 ## 配置模型映射
 
-AIO Coding Hub 支持把 CLI 请求里的模型名称映射到上游模型。配置木瓜 API 时，建议把需要使用的模型槽位都映射到控制台可用模型。
+为准备使用的 CLI 配置模型映射：例如主模型、快速模型、推理模型，或者 Claude 的模型槽位。每个槽位都应对应当前账号实际可用、且与目标协议匹配的模型。
 
-示例：
+使用预设时也要核对模型 ID、接口类型和权限。模型映射是否成功，以真实请求命中的模型为准。
 
-| 模型槽位 | 填写内容 |
-| --- | --- |
-| Main Model | `your-model-id` |
-| Reasoning Model | `your-model-id` |
-| Haiku Model | `your-model-id` |
-| Sonnet Model | `your-model-id` |
-| Opus Model | `your-model-id` |
+## 启用本机代理
 
-如果你只想先跑通，可以先把主模型填成 `your-model-id`。后续再根据控制台可用模型，分别配置快模型、推理模型或高能力模型。
+在 AIO 首页启用目标 CLI 的代理开关，确认该 CLI 已指向 AIO 提供的本机入口，再重新启动 CLI。
 
-## 打开 CLI 代理
+默认网关的健康检查：
 
-回到首页，打开你要使用的 CLI 代理开关。
+::: code-group
 
-常见选择：
-
-- 使用 Claude Code：打开 Claude Code 代理
-- 使用 Codex：打开 Codex 代理
-- 使用 Gemini CLI：打开 Gemini CLI 代理
-
-AIO Coding Hub 会在本机启动网关。默认健康检查地址通常是：
-
-```bash
+```bash [macOS / Linux]
 curl http://127.0.0.1:37123/health
 ```
 
-如果返回类似下面内容，说明本机网关已经运行：
-
-```json
-{
-  "status": "ok"
-}
+```powershell [Windows PowerShell]
+Invoke-RestMethod -Uri "http://127.0.0.1:37123/health"
 ```
 
-## 验证调用
+:::
 
-打开对应 CLI 工具，发送一条简单请求。
+默认地址以当前版本设置为准。返回 `{"status":"ok"}` 说明本机网关可达。
 
-如果配置正确，你可以在 AIO Coding Hub 的控制台、请求日志或用量页面看到本次请求记录。
+## 验证上游调用
 
-验证时建议同时检查：
+在 CLI 中发送一条简短消息，同时核对：
 
-- 请求是否命中 `木瓜 API` 供应商
-- 模型是否被映射到 `your-model-id`
-- 是否有 401、404、429、500 等错误
-- 用量统计是否出现记录
+1. AIO 日志中的目标供应商为木瓜 API。
+2. 实际模型 ID、协议和完整请求地址正确。
+3. CLI 正常返回消息，木瓜控制台出现对应调用记录。
 
-## 常见排查
+本机健康检查和上游模型调用是两个验证步骤。排查时分别查看本机代理与上游错误。
 
-### 健康检查失败
+## 常见问题
 
-确认 AIO Coding Hub 已经启动，并且对应 CLI 代理开关已经打开。
+| 现象 | 检查 |
+| --- | --- |
+| 健康检查失败 | AIO 是否运行、实际监听端口是否正确 |
+| 请求未进入 AIO | CLI 的生效地址、代理开关、旧环境变量 |
+| `401` | 上游 Key、鉴权方式和 Key 状态 |
+| `404` | 自动拼接后的路径，以及模型映射 |
+| `503` 无可用渠道 | 令牌分组是否提供映射的模型 |
+| `429` 或 `5xx` | 上游错误体；限流、配额和重试策略 |
 
-如果端口被占用，可以在 AIO 设置里查看实际监听端口，再用实际端口检查：
+多层网关或 SDK 都可能自动重试，请限制总重试次数并核对平台消耗。更多方法见[故障排查](/guide/troubleshooting)。
 
-```bash
-curl http://127.0.0.1:实际端口/health
-```
+## 官方参考
 
-### 提示鉴权失败
-
-检查供应商里的 API Key 是否正确，尤其注意不要带入空格、换行或不可见字符。
-
-### 提示模型不存在
-
-检查模型映射是否填成了木瓜 API 控制台里的真实模型 ID。不要把 `your-model-id` 原样填进去。
-
-### 请求没有进入 AIO
-
-确认对应 CLI 的代理开关已经打开，并关闭可能冲突的旧环境变量或旧代理配置。
-
-### 上游请求失败
-
-先在 AIO 请求日志里查看错误码：
-
-- `401`：API Key 错误或失效
-- `404`：接口路径或模型不匹配
-- `429`：请求过于频繁或额度不足
-- `500`：稍后重试，必要时联系管理员
-
-## 参考资料
-
-- AIO Coding Hub GitHub：`https://github.com/dyndynjyxa/aio-coding-hub`
-- AIO Coding Hub Releases：`https://github.com/dyndynjyxa/aio-coding-hub/releases`
+- [AIO Coding Hub 项目说明](https://github.com/dyndynjyxa/aio-coding-hub)
+- [安装包与版本记录](https://github.com/dyndynjyxa/aio-coding-hub/releases)

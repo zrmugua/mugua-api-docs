@@ -1,140 +1,77 @@
+---
+description: 使用 CC Switch 管理木瓜 API 在多个开发工具中的配置。
+lastVerified: "2026-10-29"
+---
 # CC Switch 统一配置
 
-CC Switch 是一个跨平台的 CLI 配置管理工具，可以集中管理 Claude Code、Codex、OpenClaw、Gemini CLI 等工具的 API 配置。
-
-如果你同时使用多个命令行工具，推荐优先用 CC Switch 管理配置。这样不用分别编辑每个工具的配置文件，切换 API Key、模型和接口地址也更方便。
+CC Switch 是一个跨平台桌面配置管理工具，可集中管理 Claude Code、Codex、Gemini CLI、OpenCode、OpenClaw 等十余种开发工具的供应商与模型设置，还提供本地路由和自动故障切换。具体支持范围以安装版本为准。
 
 ## 安装
 
-项目地址：
+Windows 从 [GitHub Releases](https://github.com/farion1231/cc-switch/releases) 下载 `CC-Switch-v版本号-Windows.msi` 安装包，或 `-Portable.zip` 免安装版；ARM 设备选择带 `arm64` 的文件。
 
-```text
-https://github.com/farion1231/cc-switch
-```
-
-下载地址：
-
-```text
-https://github.com/farion1231/cc-switch/releases
-```
-
-### Windows
-
-打开 Releases 页面，下载 Windows 安装版或便携版。
-
-下载后按提示安装，或直接运行便携版程序。
-
-### macOS
-
-如果你使用 Homebrew，可以运行：
+macOS 可以使用：
 
 ```bash
-brew tap farion1231/ccswitch
 brew install --cask cc-switch
 ```
 
-### Linux
-
-Linux 可以使用 Linuxbrew 安装：
+Arch Linux 可以使用 AUR：
 
 ```bash
-brew tap farion1231/ccswitch
-brew install cc-switch
+paru -S cc-switch-bin
 ```
 
-也可以在 Releases 页面下载对应发行版的安装包，例如 AppImage、deb 或 rpm。
+其他 Linux 发行版按 Releases 中的包类型与系统依赖选择。安装方式见[项目说明](https://github.com/farion1231/cc-switch)。
 
-## 通用配置流程
+## 添加木瓜 API
 
-打开 CC Switch 后，按下面流程添加木瓜 API 配置。
+1. 在侧栏选择目标工具。
+2. 添加供应商，选择自定义配置。
+3. 填写木瓜 API 令牌、Base URL 和目标模型 ID。
+4. 保存，并按当前工具的方式启用或添加配置。
+5. 重启对应 CLI 或编辑器，发送测试消息。
 
-1. 点击“添加配置”
-2. 选择要配置的工具，例如 Claude Code 或 Codex
-3. 供应商选择“木瓜 API”；如果列表里没有木瓜 API，就选择自定义供应商
-4. 填写 API Key
-5. 填写 Base URL
-6. 按控制台可用模型填写 `model`
-7. 点击“添加”或“保存”
-8. 重启终端或对应客户端
+不同工具的字段和启用方式可能不同。建议为每个工具使用单独的令牌，并选择对应分组：Claude Code 用 Claude 类分组，Codex 用 Codex 类分组，或都用 `auto`（见[分组与令牌](/guide/groups)）。
 
-## Base URL 填写
+## 地址与协议
 
-不同工具的 Base URL 可能不一样。
+| 目标工具 | Base URL | 协议 |
+| --- | --- | --- |
+| Claude Code | `https://api.mugua.link` | Anthropic Messages |
+| Codex | `https://api.mugua.link/v1` | Responses |
+| OpenCode | `https://api.mugua.link/v1` | 按所选 SDK 包配置 |
+| OpenClaw | `https://api.mugua.link/v1` | 按 `api` 字段配置 |
 
-Claude Code：
+模型 ID 从模型广场复制。Claude Code 的 Opus / Sonnet / Haiku 模型槽位需要映射到令牌分组中可用的模型，见 [Claude Code 模型槽位](/cli/claude-code#模型槽位)。
 
-```text
-https://api.mugua.link
-```
+## 用多条线路做故障切换
 
-Codex / OpenAI 兼容工具：
+CC Switch 的本地路由支持供应商队列：当前供应商请求失败时，自动切换到队列中的下一个。可以用同一个令牌添加多个木瓜 API 供应商，分别使用不同线路：
 
-```text
-https://api.mugua.link/v1
-```
+| 供应商名称 | Claude Code Base URL | Codex Base URL |
+| --- | --- | --- |
+| 木瓜 API 主站 | `https://api.mugua.link` | `https://api.mugua.link/v1` |
+| 木瓜 API CF 站 | `https://api.668851.xyz` | `https://api.668851.xyz/v1` |
+| 木瓜 API 加速站 | `https://api-fast.668851.xyz` | `https://api-fast.668851.xyz/v1` |
 
-如果 CC Switch 里的木瓜 API 预设已经自动填好了 Base URL，一般不用手动修改。
+线路切换只能解决网络问题；分组无可用渠道等错误换线路也不会恢复，应修改令牌分组或使用 `auto` 的跨分组重试。自动切换也会让失败的请求重试，留意重复消耗。
 
-## API Key 填写
+## 检查生效的配置
 
-API Key 请填写你在木瓜 API 控制台创建的令牌。
+先确认使用的是直接配置还是本地代理。代理模式下，CLI 指向本机网关，网关中的上游地址才是木瓜 API。
 
-控制台地址：
+启用后，在对应工具内查看提供商、模型与地址（Claude Code 用 `/status`），发送消息，再到木瓜控制台“使用日志”检查记录。
 
-```text
-https://api.mugua.link
-```
+- 配置未生效：检查旧环境变量、启动参数和其他配置管理工具；终端中手动设置的 `ANTHROPIC_*` 变量可能覆盖 CC Switch 写入的配置。
+- 鉴权失败：检查最终使用的令牌是否有效。
+- `403`：先读取响应体，常见为余额不足或令牌模型限制。
+- `503` 无可用渠道：令牌分组不提供该模型。
+- 协议不匹配：参考[接口协议对照](/reference/protocols)核对请求格式。
 
-填写前建议确认：
+单工具手动配置也可以直接使用：[Claude Code](/cli/claude-code) · [Codex](/cli/codex) · [OpenCode](/cli/opencode) · [OpenClaw](/cli/openclaw)。
 
-- API Key 没有复制多余空格
-- API Key 仍然有效
-- 当前 Key 有对应模型或工具的调用权限
+## 官方参考
 
-## 模型填写
-
-模型 ID 请从木瓜 API 控制台复制。
-
-常见填写方式：
-
-- Claude Code：填写 Claude 系列模型，或按控制台说明留空
-- Codex：填写 OpenAI / GPT 系列模型
-- 其它外接客户端：按客户端类型和控制台模型 ID 填写
-
-如果不确定模型名，先到控制台确认可用模型，再复制模型 ID。
-
-## 外接调用说明
-
-外接客户端调用时，除了 Base URL、API Key 和模型名，还可能需要补充客户端识别信息，例如 `User-Agent`。
-
-如果出现下面问题，可以优先检查外接客户端配置：
-
-- `403 Forbidden`
-- `403 block`
-- `Connection blocked`
-- 请求能发出但客户端无法正常识别返回内容
-
-## 什么时候不用 CC Switch
-
-如果你只使用一个工具，也可以直接看对应的手动配置页：
-
-- [Claude Code 安装配置](/cli/claude-code)
-- [Codex 安装配置](/cli/codex)
-
-需要频繁切换工具、Key 或模型时，使用 CC Switch 会更省心。
-
-## 常见排查
-
-### 保存配置后没有生效
-
-先关闭并重新打开终端，再启动对应工具。
-
-如果还不生效，检查是否有旧环境变量覆盖了 CC Switch 写入的配置。
-
-### 提示鉴权失败
-
-检查 API Key 是否填写正确，尤其是复制时是否带入空格、换行或不可见字符。
-
-### 提示模型不存在
-
-回到木瓜 API 控制台确认模型 ID，复制完整内容后重新填写。
+- [CC Switch 项目与安装说明](https://github.com/farion1231/cc-switch)
+- [版本下载](https://github.com/farion1231/cc-switch/releases)

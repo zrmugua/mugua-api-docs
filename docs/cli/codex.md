@@ -1,95 +1,120 @@
+---
+description: 使用环境变量和自定义提供商，将 Codex CLI 与 IDE 扩展连接到木瓜 API 的 Responses 接口。
+lastVerified: "2026-10-29"
+---
 # Codex 安装配置
 
-Codex 是 OpenAI 提供的命令行开发工具。配置木瓜 API 后，可以让 Codex 通过你的木瓜 API Key 调用可用模型。
-
-::: tip
-模型 ID 请从木瓜 API 控制台或模型列表接口复制。下面配置里的 `model` 需要替换成你账号可用的模型。
-:::
-
-示例里的 `your-api-key` 和 `your-model-id` 是占位内容，复制后请换成自己的真实值。
+Codex CLI 使用 Responses 协议接入木瓜 API。需要为它选择支持 Responses、流式输出和工具调用的 GPT 模型，令牌应属于 Codex 类分组（优质 Codex 稳定优先，特价 Codex 价格优先）或 `auto`，见[分组与令牌](/guide/groups)。
 
 ## 安装
 
-使用 npm 安装：
+::: code-group
 
-```bash
+```bash [macOS / Linux]
+curl -fsSL https://chatgpt.com/codex/install.sh | sh
+```
+
+```bash [npm]
 npm install -g @openai/codex
 ```
 
-安装完成后，可以先检查命令是否可用：
+:::
 
-```bash
-codex --version
+安装后运行 `codex --version`。Windows、Homebrew 等其他安装方式见 [Codex 官方文档](https://learn.chatgpt.com/docs/codex/cli)。
+
+## 设置凭据
+
+Codex 从环境变量读取令牌。建议持久保存，这样从 IDE 或新终端启动时也能读到：
+
+::: code-group
+
+```bash [macOS / Linux]
+echo 'export MUGUA_API_KEY="your-api-key"' >> ~/.zshrc
+source ~/.zshrc
 ```
 
-## 配置
-
-### 打开配置目录
-
-Windows：
-
-```text
-C:\Users\你的用户名\.codex
+```powershell [Windows PowerShell]
+[Environment]::SetEnvironmentVariable("MUGUA_API_KEY", "your-api-key", "User")
+$env:MUGUA_API_KEY = "your-api-key"
 ```
 
-macOS / Linux：
+:::
 
-```text
-~/.codex
-```
+使用 Bash 时把 `~/.zshrc` 换成 `~/.bashrc`。Windows 第一行写入用户环境变量，第二行让当前终端立即生效；之后打开的终端和重新启动的 VS Code 都能读取。更多方式见[鉴权与安全](/guide/auth)。
 
-如果没有 `.codex` 文件夹，可以手动创建。
+## 配置提供商
 
-### 创建 config.toml
+用户配置文件位于 `~/.codex/config.toml`，Windows 对应 `%USERPROFILE%\.codex\config.toml`。如果设置了 `CODEX_HOME`，配置目录随之改变。
 
-在 `.codex` 目录下创建 `config.toml`：
+先备份现有文件，将以下字段合并进去；TOML 同名字段和表只能定义一次，顶层字段要写在所有 `[表]` 之前。将 `your-model-id` 替换为模型广场中的模型 ID。
 
 ```toml
 model_provider = "mugua"
 model = "your-model-id"
-model_reasoning_effort = "high"
 
 [model_providers.mugua]
 name = "木瓜 API"
 base_url = "https://api.mugua.link/v1"
+env_key = "MUGUA_API_KEY"
 wire_api = "responses"
-requires_openai_auth = true
 ```
 
-如果你的账号只开放了部分模型，请把 `model` 改成控制台里可用的模型 ID。
+- `env_key` 指定读取凭据的环境变量，这个提供商使用自己的令牌，已保存的 ChatGPT 登录可以继续保留。
+- `wire_api` 目前只支持 `responses`，省略时也默认使用它。
+- 提供商 ID 不能使用保留名称 `openai`、`ollama`、`lmstudio`，这里使用 `mugua`。
+- 提供商字段只能写在用户级配置中。项目里的 `.codex/config.toml` 设置 `model_provider`、`model_providers` 会被忽略，并在启动时提示警告。
 
-### 创建 auth.json
+### 可选设置
 
-在 `.codex` 目录下创建 `auth.json`：
+基础调用成功后，可以按需在顶层或提供商表中添加：
 
-```json
-{
-  "OPENAI_API_KEY": "your-api-key"
-}
+```toml
+model_reasoning_effort = "medium"
+
+[model_providers.mugua]
+name = "木瓜 API"
+base_url = "https://api.mugua.link/v1"
+env_key = "MUGUA_API_KEY"
+wire_api = "responses"
+request_max_retries = 4
+stream_max_retries = 5
+stream_idle_timeout_ms = 300000
 ```
 
-请把 `your-api-key` 替换成你在木瓜 API 控制台创建的 API Key。这里直接填写 Key，不要在前面添加 `echo`。
+| 字段 | 说明 |
+| --- | --- |
+| `model_reasoning_effort` | 推理强度，如 `low`、`medium`、`high`、`xhigh`，可用档位取决于模型 |
+| `request_max_retries` | 请求失败重试次数，默认 4 |
+| `stream_max_retries` | 流中断后的重试次数，默认 5 |
+| `stream_idle_timeout_ms` | 流空闲超时，默认 300000 毫秒；渠道响应慢时可适当调大 |
 
-`auth.json` 包含你的访问凭据，请不要上传到公开仓库或发送给其他人。
+这段示例是合并后的完整样子，不要和上面的 `[model_providers.mugua]` 重复定义。
 
-## 验证配置
+## 验证一次调用
 
-在终端运行：
+在项目目录运行 `codex`，打开 `/status` 检查当前模型与提供商，再发送“请简短介绍自己”。
 
-```bash
-codex
-```
+正常返回后，在木瓜控制台“使用日志”中核对本次调用。启动界面出现只说明程序运行成功；模型生成需要实际请求验证。
 
-如果 Codex 能正常启动并调用模型，说明配置已经生效。
+## IDE 扩展
 
-## 常见排查
+VS Code 等编辑器中的 Codex 扩展与 CLI 共用 `~/.codex/config.toml`。修改配置或环境变量后，完全退出并重新打开编辑器，确保扩展进程读到 `MUGUA_API_KEY`。
 
-如果提示鉴权失败，请检查：
+## 常见问题
 
-- `auth.json` 里的 API Key 是否正确
-- API Key 前后是否有多余空格
-- API Key 是否仍然有效
+| 现象 | 检查 |
+| --- | --- |
+| 提示缺少 `MUGUA_API_KEY` | 变量是否已持久保存；IDE 是否在设置后重新启动 |
+| 修改后仍走旧提供商 | 检查用户配置、启动时的 `--profile`、`-c` 覆盖项和配置管理工具 |
+| 启动提示项目配置被忽略 | 提供商字段写在了项目级 `.codex/config.toml`，移到用户级配置 |
+| `404` 或不支持接口 | 最终路径应为 `/v1/responses`，并确认模型支持 Responses |
+| 无可用渠道 | 令牌分组不提供该模型，改用 Codex 类分组或 `auto` |
+| 特价分组偶发不可用 | 改用优质 Codex，或使用 `auto` 并开启跨分组重试 |
+| 长任务中途断流 | 调大 `stream_idle_timeout_ms`，或换用更稳定的分组 / 线路 |
+| 模型已下线 | 查看控制台公告，替换 `model` 为在售的模型 ID |
+| 参数不支持 | 先使用最小配置，再逐项添加 `model_reasoning_effort` 等选项 |
 
-如果提示模型不可用，请回到木瓜 API 控制台确认模型 ID。
+## 官方参考
 
-如果提示接口不支持，请联系管理员确认当前账号是否支持 Codex 所需的接口能力。
+- [自定义模型提供商与配置层级](https://learn.chatgpt.com/docs/config-file/config-advanced)
+- [配置字段参考](https://learn.chatgpt.com/docs/config-file/config-reference)

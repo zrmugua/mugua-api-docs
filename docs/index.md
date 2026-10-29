@@ -1,26 +1,22 @@
 ---
 layout: home
 
+title: 开发者文档
+description: 从第一次 API 调用到开发工具配置，查阅木瓜 API 的接入指南、协议参考与故障排查。
 hero:
-  name: "木瓜 API"
-  text: "统一、稳定、易接入的 AI API"
-  tagline: "一套 OpenAI 兼容接口，连接应用、脚本和 Claude Code、Codex、OpenCode、OpenClaw 等开发工具。"
+  name: 木瓜 API · 开发者文档
+  text: 把模型接入你的工作流
+  tagline: 从一条 API 请求开始，连接应用、编程助手与常用客户端。接入指南、配置示例和协议参考，都在这里。
   image:
     src: /logo.svg
     alt: 木瓜 API Logo
   actions:
     - theme: brand
-      text: 开始接入
+      text: 快速开始 →
       link: /guide/start
     - theme: alt
-      text: 进入控制台
-      link: https://api.mugua.link
-
-features:
-  - title: OpenAI 兼容
-    details: 使用 /v1 接口格式，现有 OpenAI SDK 通常只需替换 Base URL 和 API Key。
-  - title: 统一入口
-    details: 应用服务、命令行工具和第三方客户端都可以通过木瓜 API 统一接入。
-  - title: 上线友好
-    details: 文档覆盖鉴权、SDK、开发工具、错误处理、额度计费和常见排查。
+      text: 配置开发工具
+      link: /guide/tools
 ---
+
+<HomePortal />
