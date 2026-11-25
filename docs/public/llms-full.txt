@@ -1,4 +1,4 @@
-# 木瓜 API — 完整文档汇总
+﻿# 木瓜 API — 完整文档汇总
 
 > 源站：https://docs.668851.xyz
 > 控制台与主站：https://api.mugua.link | 备用线路（CF 站）：https://api.668851.xyz

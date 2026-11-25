@@ -58,8 +58,13 @@
 .help-actions a.help-qq { background: var(--vp-c-brand-1); border-color: var(--vp-c-brand-1); color: #fff; }
 .help-actions a.help-qq:hover { background: var(--vp-c-brand-2); border-color: var(--vp-c-brand-2); color: #fff; }
 .dark .help-actions a.help-qq { color: #0b1220; }
-.doc-meta { display: flex; align-items: center; gap: 8px; color: var(--vp-c-text-2); font-size: 12px; margin-bottom: 14px; }
+.doc-meta-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.doc-meta { display: flex; align-items: center; gap: 8px; color: var(--vp-c-text-2); font-size: 12px; }
 .doc-meta-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--vp-c-brand-1); }
+.doc-ai-copy { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border: 1px solid var(--vp-c-divider); border-radius: 7px; background: var(--vp-c-bg-soft); color: var(--vp-c-text-2); font-size: 12px; line-height: 1.4; cursor: pointer; transition: border-color .15s, color .15s, background .15s; }
+.doc-ai-copy:hover { border-color: var(--vp-c-brand-1); color: var(--vp-c-brand-1); }
+.doc-ai-copy.is-copied { border-color: var(--vp-c-brand-1); background: var(--vp-c-brand-soft); color: var(--vp-c-brand-1); font-weight: 500; }
+.doc-ai-icon { width: 13px; height: 13px; flex-shrink: 0; }
 
 /* Interactive widgets */
 .mg-widget { margin: 20px 0; padding: 20px; border: 1px solid var(--vp-c-divider); border-radius: 12px; background: var(--vp-c-bg-soft); }
@@ -131,4 +136,4 @@
   .mg-copy-bar { flex-direction: column; align-items: stretch; }
   .mg-calc-inputs, .mg-fill-inputs, .mg-calc-results, .mg-calc-results-2 { grid-template-columns: 1fr; }
 }
-@media (prefers-reduced-motion: reduce) { .path-card, .mg-seg-btn, .mg-btn-primary { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .path-card, .mg-seg-btn, .mg-btn-primary, .doc-ai-copy { transition: none; } }

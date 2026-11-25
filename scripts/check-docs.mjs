@@ -94,7 +94,7 @@ if (process.argv.includes('--built')) {
       checkLink(match[1].replaceAll('&amp;', '&'), file, documents, true)
     }
   }
-  for (const requiredAsset of ['sitemap.xml', 'robots.txt', 'llms.txt', 'llms-full.txt']) {
+  for (const requiredAsset of ['sitemap.xml', 'robots.txt', 'llms.txt', 'llms-full.txt', 'ai-docs.json']) {
     const assetPath = path.join(dist, requiredAsset)
     if (!existsSync(assetPath)) {
       failures.push(`构建产物缺少必要文件：${requiredAsset}`)

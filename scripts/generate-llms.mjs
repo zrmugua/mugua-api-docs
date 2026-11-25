@@ -7,6 +7,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const docsRoot = path.join(root, 'docs')
 const publicRoot = path.join(docsRoot, 'public')
 const siteUrl = (config.sitemap?.hostname || 'https://docs.668851.xyz').replace(/\/+$/, '')
+const UTF8_BOM = '\uFEFF'
 
 function parseFrontmatter(source) {
   const match = source.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/)
@@ -58,6 +59,7 @@ const fullParts = [
   ''
 ]
 
+const aiPages = {}
 let pageCount = 0
 
 for (const group of sidebar) {
@@ -72,6 +74,7 @@ for (const group of sidebar) {
     const { meta, body } = parseFrontmatter(raw)
     const url = `${siteUrl}/${rel}.html`
     const desc = meta.description ? `：${meta.description}` : ''
+    const cleaned = cleanBodyForLlms(body)
     indexLines.push(`- [${item.text}](${url})${desc}`)
 
     fullParts.push(
@@ -80,9 +83,17 @@ for (const group of sidebar) {
       `<!-- Source: ${url} -->`,
       `原文地址：${url}`,
       '',
-      cleanBodyForLlms(body),
+      cleaned,
       ''
     )
+
+    aiPages[rel] = [
+      `原文：${url}`,
+      '控制台与主站：https://api.mugua.link | 备用线路（CF 站）：https://api.668851.xyz',
+      '',
+      cleaned
+    ].join('\n')
+
     pageCount++
   }
   indexLines.push('')
@@ -91,7 +102,8 @@ for (const group of sidebar) {
 const llmsTxt = `${indexLines.join('\n').trim()}\n`
 const llmsFullTxt = `${fullParts.join('\n').trim()}\n`
 
-writeFileSync(path.join(publicRoot, 'llms.txt'), llmsTxt, 'utf8')
-writeFileSync(path.join(publicRoot, 'llms-full.txt'), llmsFullTxt, 'utf8')
+writeFileSync(path.join(publicRoot, 'llms.txt'), UTF8_BOM + llmsTxt, 'utf8')
+writeFileSync(path.join(publicRoot, 'llms-full.txt'), UTF8_BOM + llmsFullTxt, 'utf8')
+writeFileSync(path.join(publicRoot, 'ai-docs.json'), JSON.stringify(aiPages), 'utf8')
 
-console.log(`已生成 llms.txt（${pageCount} 篇索引）与 llms-full.txt（${llmsFullTxt.length} 字符）。`)
+console.log(`已生成 llms.txt（${pageCount} 篇索引）、llms-full.txt（${llmsFullTxt.length} 字符）与 ai-docs.json。`)

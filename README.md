@@ -31,7 +31,7 @@ npm run docs:sync-check
 npm run docs:preview
 ```
 
-- `docs:llms`：按侧边栏顺序自动生成 `docs/public/llms.txt` 与 `docs/public/llms-full.txt`，供 AI 编程工具直接抓取阅读。
+- `docs:llms`：按侧边栏顺序自动生成 `docs/public/llms.txt`、`docs/public/llms-full.txt`（带 UTF-8 BOM 防浏览器乱码）及单页“复制本页给 AI”所需的 `docs/public/ai-docs.json`。
 - `docs:check`：检查每页 SEO `description`、Markdown 与导航内部链接、锚点、禁用残留词，以及 JSON、TOML、JavaScript、PowerShell、Bash 内联 JSON（与可用环境下的 Python）示例。
 - `docs:verify`：依次生成 `llms.txt`、检查源码、构建站点，并检查生成 HTML 中的内部链接、锚点、本地资源以及 `sitemap.xml` / `robots.txt` / `llms.txt`。
 - `docs:sync-check`：拉取线上 `https://api.mugua.link/api/status`，核对文档里的线路、充值比例、文档站域名与 QQ 群链接是否与线上配置一致。

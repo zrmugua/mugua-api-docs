@@ -127,6 +127,13 @@ export default {
     search: {
       provider: 'local',
       options: {
+        miniSearch: {
+          searchOptions: {
+            combineWith: 'AND',
+            fuzzy: 0.2,
+            prefix: true
+          }
+        },
         locales: {
           root: {
             translations: {
