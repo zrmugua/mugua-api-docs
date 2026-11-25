@@ -1,10 +1,10 @@
 ---
-description: 配置 OpenCode 自定义提供商，并按模型选择 Chat Completions 或 Responses。
-lastVerified: "2026-10-29"
+description: 配置 OpenCode 自定义提供商，并按模型选择 Chat Completions、Responses 或 Anthropic Messages。
+lastVerified: "2026-11-24"
 ---
 # OpenCode 配置指南
 
-OpenCode 支持通过不同 AI SDK 包接入模型。下面先使用 Chat Completions；需要 Responses 时按下文切换。
+OpenCode 支持通过不同 AI SDK 包接入模型。下面先使用 Chat Completions；需要 Responses 或 Anthropic Messages 时按下文切换。
 
 ## 安装
 
@@ -26,29 +26,33 @@ npm install -g opencode-ai
 
 二选一即可：
 
-**方式一：环境变量**，配合下文配置中的 `{env:MUGUA_API_KEY}` 使用。
+**方式一：持久环境变量**，配合下文配置中的 `{env:MUGUA_API_KEY}` 使用：
 
 ::: code-group
 
 ```bash [macOS / Linux]
-export MUGUA_API_KEY="your-api-key"
+echo 'export MUGUA_API_KEY="your-api-key"' >> ~/.zshrc
+source ~/.zshrc
 ```
 
 ```powershell [Windows PowerShell]
+[Environment]::SetEnvironmentVariable("MUGUA_API_KEY", "your-api-key", "User")
 $env:MUGUA_API_KEY = "your-api-key"
 ```
 
 :::
 
-变量只对当前终端生效，需要从这个终端启动 OpenCode；持久保存见[鉴权与安全](/guide/auth)。
+使用 Bash 时把 `~/.zshrc` 换成 `~/.bashrc`。Windows 第一行写入用户环境变量，第二行让当前终端立即生效。更多方式见[鉴权与安全](/guide/auth)。
 
 **方式二：`/connect` 保存令牌**。启动 `opencode`，运行 `/connect`，滚动到最后选择 **Other**，ID 填 `mugua`，再粘贴令牌。令牌保存在 `~/.local/share/opencode/auth.json`，此时配置中可以省略 `options.apiKey`。`/connect` 只保存凭据，仍需要按下文创建提供商配置。
 
 ## 创建配置
 
-全局配置：`~/.config/opencode/opencode.json`。Windows 对应 `%USERPROFILE%\.config\opencode\opencode.json`。
+全局配置：`~/.config/opencode/opencode.json`。Windows 对应 `%USERPROFILE%\.config\opencode\opencode.json`（目录不存在时先新建）。
 
 也可以使用项目根目录的 `opencode.json`。配置会按层级合并，同一字段由更高优先级的配置覆盖。编辑前备份并合并已有内容。
+
+<ConfigFill tool="opencode" />
 
 ```json
 {
@@ -88,7 +92,7 @@ $env:MUGUA_API_KEY = "your-api-key"
 | Responses | `@ai-sdk/openai` | `/v1/responses` |
 | Anthropic Messages | `@ai-sdk/anthropic` | `/v1/messages` |
 
-三种包的 `baseURL` 都填 `https://api.mugua.link/v1`。GPT 系列建议使用 Responses，Claude 系列可以使用 Anthropic Messages。同时使用多种协议时，可以按包分别建立 `mugua-openai`、`mugua-claude` 等多个提供商。
+三种包的 `baseURL` 在 OpenCode 中都填 `https://api.mugua.link/v1`。注意：`@ai-sdk/anthropic` 会直接在 `baseURL` 后拼接 `/messages`，因此这里需要带 `/v1`，这与 Claude Code 及官方 Anthropic SDK 填根地址的做法不同。GPT 系列建议使用 Responses，Claude 系列可以使用 Anthropic Messages。同时使用多种协议时，可以按包分别建立 `mugua-openai`、`mugua-claude` 等多个提供商。
 
 切换协议时同时确认模型及渠道支持目标接口，令牌分组也要提供对应模型，见[分组与令牌](/guide/groups)。
 
@@ -96,17 +100,25 @@ $env:MUGUA_API_KEY = "your-api-key"
 
 ## 验证配置
 
+先用一条非交互命令快速验证通路（替换 `your-model-id`）：
+
+```bash
+opencode run --model mugua/your-model-id "你好，请简短介绍自己。"
+```
+
+也可直接进入交互界面确认：
+
 1. 在项目目录运行 `opencode`。
 2. 使用 `/models` 查看并选择 `mugua` 下的模型。
 3. 发送一条简短消息。
-4. 在木瓜控制台确认模型和调用结果。
+4. 在木瓜控制台“使用日志”中确认模型和调用结果。
 
 ## 常见问题
 
 | 现象 | 检查 |
 | --- | --- |
 | 仍使用旧模型 | 项目级配置、环境指定的配置文件、启动参数和已保存的模型选择 |
-| 鉴权失败 | 启动进程能否读取 `MUGUA_API_KEY` |
+| 鉴权失败 | 环境变量是否已持久保存并在当前终端生效 |
 | 接口不支持 | SDK 包、模型与协议是否匹配 |
 | 模型不存在 | 顶层 `model` 和 `models` 的键是否使用同一个真实 ID |
 | 无可用渠道 | 令牌分组是否提供该模型 |

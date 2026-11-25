@@ -1,5 +1,6 @@
 ---
 description: 创建 API Key、查询可用模型，并用 Bash 或 PowerShell 完成第一次调用。
+lastVerified: "2026-11-24"
 ---
 # 快速开始
 
@@ -8,8 +9,8 @@ description: 创建 API Key、查询可用模型，并用 Bash 或 PowerShell �
 ## 1. 准备令牌和模型
 
 1. 在[木瓜 API 控制台](https://api.mugua.link)注册账号（邮箱验证或 GitHub 登录），在“钱包管理”中充值或先签到领取额度。
-2. 进入“令牌管理”，点击“添加令牌”，**选择分组**后保存，复制 `sk-` 开头的令牌。分组决定可用模型和价格，不确定时选 `auto`，详见[分组与令牌](/guide/groups)。
-3. 在“模型广场”查看该分组下可用的模型 ID。
+2. 进入“令牌管理”，点击“添加令牌”并保存，复制 `sk-` 开头的令牌。新建令牌默认使用 `auto` 分组，也可按需在控制台切换分组，详见[分组与令牌](/guide/groups)。
+3. 在“模型广场”查看当前可用的模型 ID。
 
 | 配置 | 示例 |
 | --- | --- |
@@ -19,7 +20,7 @@ description: 创建 API Key、查询可用模型，并用 Bash 或 PowerShell �
 
 `your-api-key`、`your-model-id` 都是占位值。模型名称需要与控制台提供的 ID 完全一致。
 
-想先不写代码试一下，可以在控制台侧边栏的“操练场”中选择模型直接对话。
+想先不写代码试一下，可以在控制台侧边栏的“操练场”、“在线聊天”或“在线生图”中直接体验。
 
 ## 2. 设置环境变量
 
@@ -68,10 +69,12 @@ curl --fail-with-body --silent --show-error \
   https://api.mugua.link/v1/chat/completions \
   -H "Authorization: Bearer $MUGUA_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{
-    "model": "your-model-id",
-    "messages": [{ "role": "user", "content": "你好，请简短介绍自己。" }]
-  }'
+  -d @- <<EOF
+{
+  "model": "$MUGUA_MODEL",
+  "messages": [{ "role": "user", "content": "你好，请简短介绍自己。" }]
+}
+EOF
 ```
 
 ```powershell [Windows PowerShell]
@@ -92,7 +95,7 @@ $result.choices[0].message.content
 
 :::
 
-Bash 示例中的 `model` 需要替换为真实 ID；PowerShell 示例读取 `MUGUA_MODEL` 环境变量。更多参数见[聊天补全](/reference/chat-completions)。
+两个示例都直接读取第 2 步设置的 `MUGUA_API_KEY` 与 `MUGUA_MODEL`。更多参数见[聊天补全](/reference/chat-completions)。
 
 ## 5. 确认结果
 
@@ -101,11 +104,11 @@ Bash 示例中的 `model` 需要替换为真实 ID；PowerShell 示例读取 `MU
 | 现象 | 下一步 |
 | --- | --- |
 | 返回 `401` | 检查 Key 和请求头 |
+| 返回 `403` | 常见为账户余额不足、令牌额度用尽或模型受限，读取错误体核对 |
 | 返回 `404` 或模型错误 | 检查路径、模型 ID 和模型支持的协议 |
-| 提示分组下无可用渠道 | 令牌分组不提供该模型，见[分组与令牌](/guide/groups) |
-| 提示额度不足 | 充值或调整令牌额度，见[额度与计费](/guide/billing) |
-| 返回 `429` | 读取错误体，区分频率限制与额度问题 |
-| 网络错误或超时 | 按[故障排查](/guide/troubleshooting)检查网络和客户端 |
+| 返回 `503` 提示无可用渠道 | 令牌分组不提供该模型，见[分组与令牌](/guide/groups) |
+| 返回 `429` | 频率、并发或上游限流，降低并发并有限退避重试 |
+| 网络错误或超时 | 按[故障排查](/guide/troubleshooting)检查网络和线路 |
 
 ## 继续接入
 

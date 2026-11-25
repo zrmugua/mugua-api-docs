@@ -1,3 +1,7 @@
+---
+description: 按使用场景选择合适的木瓜 API 接入方式，涵盖 SDK、命令行编程工具、桌面客户端与多工具管理。
+lastVerified: "2026-11-24"
+---
 # 选择接入方式
 
 先确定使用场景，再选择工具和协议。每个工具页面都包含配置位置、示例与调用验证步骤。
@@ -15,13 +19,13 @@
 
 | 工具 | 主要用途 | 本文档采用的协议 | 令牌分组 | 配置指南 |
 | --- | --- | --- | --- | --- |
-| Claude Code | 终端编程助手 | Anthropic Messages | Claude 类分组或 `auto` | [安装与配置](/cli/claude-code) |
-| Codex | 终端编程助手 | Responses | Codex 类分组或 `auto` | [安装与配置](/cli/codex) |
-| OpenCode | 终端编程助手 | Chat Completions，可切换 Responses | 与模型对应 | [配置指南](/cli/opencode) |
-| OpenClaw | 自托管助手 | Responses，可按模型切换 | 与模型对应 | [配置说明](/cli/openclaw) |
-| Cherry Studio | 桌面聊天客户端 | OpenAI 兼容或对应的自定义端点 | 与模型对应 | [配置指南](/client/cherry-studio) |
+| Claude Code | 终端编程助手 | Anthropic Messages | 支持目标模型的分组或 `auto` | [安装与配置](/cli/claude-code) |
+| Codex | 终端编程助手 | Responses | 支持目标模型的分组或 `auto` | [安装与配置](/cli/codex) |
+| OpenCode | 终端编程助手 | Chat Completions，可切换 Responses | 支持目标模型的分组或 `auto` | [配置指南](/cli/opencode) |
+| OpenClaw | 自托管助手 | Responses，可按模型切换 | 支持目标模型的分组或 `auto` | [配置说明](/cli/openclaw) |
+| Cherry Studio | 桌面聊天客户端 | OpenAI 兼容或对应的自定义端点 | 支持目标模型的分组或 `auto` | [配置指南](/client/cherry-studio) |
 
-令牌分组决定工具能调用哪些模型，选择方法见[分组与令牌](/guide/groups#按工具选择)。
+令牌分组决定工具能调用哪些模型，机制说明见[分组与令牌](/guide/groups)，具体分组与模型对应关系以控制台为准。
 
 编程助手除了文本生成，通常还需要模型与渠道支持工具调用和流式输出。普通文本调用成功后，再在工具中验证一次完整交互。
 

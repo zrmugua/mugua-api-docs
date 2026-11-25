@@ -1,6 +1,6 @@
 ---
 description: 对照三种协议的 SSE 事件，正确读取文本增量、用量与终止状态。
-lastVerified: "2026-10-28"
+lastVerified: "2026-11-24"
 ---
 # 流式输出
 
@@ -8,18 +8,20 @@ lastVerified: "2026-10-28"
 
 ## Chat Completions
 
-cURL 使用 `-N` 关闭客户端输出缓冲：
+cURL 使用 `-N` 关闭客户端输出缓冲（先设置 `MUGUA_API_KEY` 与 `MUGUA_MODEL`）：
 
 ```bash
 curl -N --fail-with-body --silent --show-error \
   https://api.mugua.link/v1/chat/completions \
   -H "Authorization: Bearer $MUGUA_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{
-    "model": "your-model-id",
-    "messages": [{ "role": "user", "content": "写一段简短欢迎语。" }],
-    "stream": true
-  }'
+  -d @- <<EOF
+{
+  "model": "$MUGUA_MODEL",
+  "messages": [{ "role": "user", "content": "写一段简短欢迎语。" }],
+  "stream": true
+}
+EOF
 ```
 
 文本增量通常在 `choices[].delta.content`。数据块可能只有角色、停止原因、工具参数或用量，`choices` 也可能为空。`data: [DONE]` 是 Chat Completions 的常见流结束标记。

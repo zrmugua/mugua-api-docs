@@ -1,0 +1,59 @@
+# 木瓜 API
+
+> 木瓜 API 开发者文档：快速接入、SDK 与开发工具配置、接口参考和故障排查。
+
+## 平台关键信息
+
+- 控制台与主站：https://api.mugua.link
+- OpenAI 兼容 Base URL：https://api.mugua.link/v1
+- Claude Code / Anthropic Base URL：https://api.mugua.link
+- 备用线路（CF 站）：https://api.668851.xyz
+- 充值比例：0.5 元人民币 = 1 美元额度（具体模型、分组与倍率以控制台为准）
+- 官方 QQ 用户群（上新与通知）：https://qm.qq.com/q/Q90cLKHh2k
+- 完整纯文本汇总：https://docs.668851.xyz/llms-full.txt
+
+## 使用指南
+
+- [快速开始](https://docs.668851.xyz/guide/start.html)：创建 API Key、查询可用模型，并用 Bash 或 PowerShell 完成第一次调用。
+- [平台介绍](https://docs.668851.xyz/guide/intro.html)：了解木瓜 API 平台入口、主站与备用线路、基本概念以及接入流程。
+- [接入地址与协议](https://docs.668851.xyz/guide/base-url.html)：木瓜 API 的 Base URL、主站与 CF 站线路切换、三种协议路径以及避免重复 /v1 拼接说明。
+- [分组与令牌](https://docs.668851.xyz/guide/groups.html)：了解木瓜 API 的令牌与分组机制：如何创建令牌、使用默认 auto 分组与跨分组重试，以及排查无可用渠道。
+- [鉴权与安全](https://docs.668851.xyz/guide/auth.html)：木瓜 API 的请求头鉴权方式、环境变量保存、个人工具与服务端密钥安全规范。
+- [SDK 配置](https://docs.668851.xyz/guide/sdk.html)：使用官方 OpenAI SDK 在 Node.js 和 Python 中调用木瓜 API，覆盖聊天补全、Responses 和流式输出。
+- [额度与计费](https://docs.668851.xyz/guide/billing.html)：木瓜 API 的充值比例、美元额度、分组倍率与按次计费说明，含人民币价格与等效倍率换算工具。
+
+## 工具接入
+
+- [选择接入方式](https://docs.668851.xyz/guide/tools.html)：按使用场景选择合适的木瓜 API 接入方式，涵盖 SDK、命令行编程工具、桌面客户端与多工具管理。
+
+## 配置管理工具
+
+- [CC Switch 统一配置](https://docs.668851.xyz/cli/cc-switch.html)：使用 CC Switch 管理木瓜 API 在多个开发工具中的配置。
+- [AIO Coding Hub 配置指南](https://docs.668851.xyz/cli/aio-coding-hub.html)：将木瓜 API 配置为 AIO Coding Hub 上游，并验证本机网关和实际调用。
+
+## 命令行工具
+
+- [Claude Code 安装配置](https://docs.668851.xyz/cli/claude-code.html)：通过 Anthropic Messages 协议配置 Claude Code CLI、VS Code 扩展与桌面应用。
+- [Codex 安装配置](https://docs.668851.xyz/cli/codex.html)：使用环境变量和自定义提供商，将 Codex CLI 与 IDE 扩展连接到木瓜 API 的 Responses 接口。
+- [OpenCode 配置指南](https://docs.668851.xyz/cli/opencode.html)：配置 OpenCode 自定义提供商，并按模型选择 Chat Completions、Responses 或 Anthropic Messages。
+- [OpenClaw 配置说明](https://docs.668851.xyz/cli/openclaw.html)：配置 OpenClaw 自定义模型提供商、凭据环境变量与默认模型。
+
+## 客户端配置
+
+- [Cherry Studio 配置指南](https://docs.668851.xyz/client/cherry-studio.html)：在 Cherry Studio 中添加木瓜 API 服务商，选择端点并配置模型。
+
+## API 参考
+
+- [接口协议对照](https://docs.668851.xyz/reference/protocols.html)：对照 Chat Completions、Responses API、Anthropic Messages 与 Images 接口的路径、鉴权、输入输出及流式事件差异。
+- [模型列表](https://docs.668851.xyz/reference/models.html)：使用 GET /v1/models 查询当前木瓜 API 令牌可用的模型 ID，以及在工具中选择与填写模型的方法。
+- [聊天补全](https://docs.668851.xyz/reference/chat-completions.html)：Chat Completions 的请求字段、响应结构与模型参数兼容说明。
+- [Responses API](https://docs.668851.xyz/reference/responses.html)：Responses API 的输入、文本读取、状态及多轮上下文说明。
+- [Anthropic Messages](https://docs.668851.xyz/reference/anthropic-messages.html)：Anthropic Messages 的鉴权、请求参数、SDK 与响应解析示例。
+- [图片生成](https://docs.668851.xyz/reference/images.html)：通过 OpenAI 兼容 Images API 生成图片，含接口地址、常用参数、计费提示与保存示例。
+- [流式输出](https://docs.668851.xyz/reference/streaming.html)：对照三种协议的 SSE 事件，正确读取文本增量、用量与终止状态。
+- [错误处理](https://docs.668851.xyz/reference/errors.html)：木瓜 API 常见 HTTP 状态码、平台错误提示、错误体解析与安全重试策略参考。
+
+## 帮助
+
+- [常见问题](https://docs.668851.xyz/guide/faq.html)：木瓜 API 常见问题解答：Base URL、模型 ID、分组与计费倍率、401/403/404/429/503 错误、线路切换与 QQ 用户群。
+- [故障排查](https://docs.668851.xyz/guide/troubleshooting.html)：按网络、鉴权、路径、模型与工具配置顺序排查木瓜 API 调用失败问题。

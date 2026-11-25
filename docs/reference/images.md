@@ -1,62 +1,64 @@
 ---
-description: 使用 gpt-image-2 等模型通过 Images API 生成图片，含推荐线路、计费方式与保存示例。
-lastVerified: "2026-10-29"
+description: 通过 OpenAI 兼容 Images API 生成图片，含接口地址、常用参数、计费提示与保存示例。
+lastVerified: "2026-11-24"
 ---
 # 图片生成
 
-图片模型（如 `gpt-image-2`）使用 OpenAI 兼容的 Images 接口，按次计费。不想写代码时，可以直接使用控制台侧边栏“聊天”中的在线生图入口，它已内置推荐线路。
+图片模型（如 `gpt-image` 系列）使用 OpenAI 兼容的 Images 接口，通常按次计费。不想写代码时，可以直接使用控制台侧边栏“聊天”中的**在线生图**入口。
 
 ## 请求地址
 
-生图耗时较长，推荐使用加速站，稳定性更好：
-
 ```http
-POST https://api-fast.668851.xyz/v1/images/generations
+POST https://api.mugua.link/v1/images/generations
 Authorization: Bearer your-api-key
 Content-Type: application/json
 ```
 
-主站 `https://api.mugua.link` 使用同一套令牌，也可以调用。各线路说明见[接入地址](/guide/base-url#线路选择)。令牌所属分组需要提供该图片模型，见[分组与令牌](/guide/groups)。
+主站不稳定时可切换到 CF 站 `https://api.668851.xyz`，使用同一套令牌（见[线路选择](/guide/base-url#线路选择)）。令牌所属分组需要提供目标图片模型，具体模型 ID 以控制台“模型广场”或在线生图页面当前展示为准，见[分组与令牌](/guide/groups)。
 
 ## 常用参数
 
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | --- | --- |
-| `model` | string | 是 | 图片模型 ID，例如 `gpt-image-2` |
+| `model` | string | 是 | 图片模型 ID，从模型广场复制 |
 | `prompt` | string | 是 | 图片描述 |
 | `n` | integer | 否 | 生成数量，按张计费 |
-| `size` | string | 否 | 默认 `auto`；常用 `1024x1024`、`1536x1024`、`1024x1536`。`gpt-image-2` 还支持边长为 16 倍数的自定义尺寸 |
+| `size` | string | 否 | 默认 `auto`；常用 `1024x1024`、`1536x1024`、`1024x1536`，具体支持尺寸以模型为准 |
 | `quality` | string | 否 | 默认 `auto`；可选 `low`、`medium`、`high`，档位越高越慢，按次价格也可能不同 |
 
 `gpt-image` 系列不支持 `response_format`，始终以 Base64 返回图片。
 
 ## 请求示例
 
+先按[快速开始](/guide/start#_2-设置环境变量)设置 `MUGUA_API_KEY` 与图片模型 `MUGUA_MODEL`：
+
 ::: code-group
 
 ```bash [macOS / Linux]
 curl --fail-with-body --silent --show-error \
-  https://api-fast.668851.xyz/v1/images/generations \
+  -o result.json \
+  https://api.mugua.link/v1/images/generations \
   -H "Authorization: Bearer $MUGUA_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{
-    "model": "gpt-image-2",
-    "prompt": "一只坐在窗台上的橘猫，水彩风格",
-    "size": "1024x1024"
-  }' \
-  -o result.json
+  -d @- <<EOF
+{
+  "model": "$MUGUA_MODEL",
+  "prompt": "一只坐在窗台上的橘猫，水彩风格",
+  "size": "1024x1024"
+}
+EOF
 ```
 
 ```powershell [Windows PowerShell]
 $headers = @{ Authorization = "Bearer $env:MUGUA_API_KEY" }
 $body = @{
-    model = "gpt-image-2"
+    model = $env:MUGUA_MODEL
     prompt = "一只坐在窗台上的橘猫，水彩风格"
     size = "1024x1024"
 } | ConvertTo-Json -Depth 10
 
 $result = Invoke-RestMethod -Method Post `
-    -Uri "https://api-fast.668851.xyz/v1/images/generations" `
+    -Uri "https://api.mugua.link/v1/images/generations" `
     -Headers $headers `
     -ContentType "application/json; charset=utf-8" `
     -Body ([System.Text.Encoding]::UTF8.GetBytes($body)) `
@@ -92,7 +94,7 @@ python3 -c "import json,base64;d=json.load(open('result.json'))['data'][0];open(
 
 ## Python SDK
 
-复用 [SDK 配置](/guide/sdk)中的 OpenAI SDK，将 Base URL 换成加速站：
+复用 [SDK 配置](/guide/sdk)中的 OpenAI SDK：
 
 ```python
 import base64
@@ -101,13 +103,13 @@ from openai import OpenAI
 
 client = OpenAI(
     api_key=os.environ["MUGUA_API_KEY"],
-    base_url="https://api-fast.668851.xyz/v1",
+    base_url="https://api.mugua.link/v1",
     timeout=300.0,
     max_retries=0,
 )
 
 result = client.images.generate(
-    model="gpt-image-2",
+    model=os.environ["MUGUA_MODEL"],
     prompt="一只坐在窗台上的橘猫，水彩风格",
     size="1024x1024",
 )
@@ -120,7 +122,7 @@ with open("image.png", "wb") as file:
 
 ## 常见问题
 
-- 超时：使用加速站，调大客户端超时；超时后先查看使用日志，确认是否已经扣费再重试。
+- 超时：调大客户端超时，或切换至 CF 站重试；超时后先查看使用日志，确认是否已经扣费再重试。
 - 无可用渠道：令牌分组不提供该图片模型，切换分组或使用 `auto`。
 - 参数不支持：先只保留 `model` 和 `prompt`，再逐项添加尺寸和质量。
 

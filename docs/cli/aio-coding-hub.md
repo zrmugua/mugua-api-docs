@@ -1,6 +1,6 @@
 ---
 description: 将木瓜 API 配置为 AIO Coding Hub 上游，并验证本机网关和实际调用。
-lastVerified: "2026-10-29"
+lastVerified: "2026-11-24"
 ---
 # AIO Coding Hub 配置指南
 
@@ -14,8 +14,8 @@ AIO Coding Hub 在本机运行网关，让 Claude Code、Codex 和 Gemini CLI �
 
 | 系统 | 安装方式 |
 | --- | --- |
-| Windows | [Releases](https://github.com/dyndynjyxa/aio-coding-hub/releases) 中的 `.msi`（支持自动更新）或 `-portable.zip` |
-| macOS | Homebrew，或 Releases 中的 `.zip` |
+| Windows | [Releases](https://github.com/dyndynjyxa/aio-coding-hub/releases) 中的 `.msi`（支持自动更新）、`.exe` 或 `-portable.zip` |
+| macOS | Homebrew，或 Releases 中的 `.dmg` / `.zip` |
 | Linux | Releases 中的 `.deb`、`.AppImage`，或 AUR 包 `aio-coding-hub-bin` |
 
 macOS 使用 Homebrew：
@@ -41,7 +41,7 @@ brew install --cask aio-coding-hub
 
 最终请求应落到 `/v1/chat/completions`、`/v1/responses` 或 `/v1/messages`。网关可能自动拼接路径，保存后需要通过日志确认实际地址。
 
-需要备用线路时，可以用同一个令牌再添加 CF 站 `https://api.668851.xyz` 或加速站 `https://api-fast.668851.xyz` 作为上游，见[线路选择](/guide/base-url#线路选择)。
+需要备用线路时，可以用同一个令牌再添加 CF 站作为上游：OpenAI 兼容上游填 `https://api.668851.xyz/v1`，Anthropic 上游填 `https://api.668851.xyz`，见[线路选择](/guide/base-url#线路选择)。
 
 ## 配置模型映射
 
@@ -51,7 +51,7 @@ brew install --cask aio-coding-hub
 
 ## 启用本机代理
 
-在 AIO 首页启用目标 CLI 的代理开关，确认该 CLI 已指向 AIO 提供的本机入口，再重新启动 CLI。
+在 AIO 首页启用目标 CLI 的代理开关，确认该 CLI 已指向 AIO 提供的本机入口，再重新启动 CLI。不要同时开启 CC Switch 和 AIO Coding Hub 的本地代理模式，否则两者会互相改写 CLI 入口导致请求异常。
 
 默认网关的健康检查：
 

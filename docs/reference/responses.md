@@ -1,6 +1,6 @@
 ---
 description: Responses API 的输入、文本读取、状态及多轮上下文说明。
-lastVerified: "2026-10-28"
+lastVerified: "2026-11-24"
 ---
 # Responses API
 
@@ -35,10 +35,12 @@ curl --fail-with-body --silent --show-error \
   https://api.mugua.link/v1/responses \
   -H "Authorization: Bearer $MUGUA_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{
-    "model": "your-model-id",
-    "input": "你好，请简短介绍自己。"
-  }'
+  -d @- <<EOF
+{
+  "model": "$MUGUA_MODEL",
+  "input": "你好，请简短介绍自己。"
+}
+EOF
 ```
 
 ```powershell [Windows PowerShell]

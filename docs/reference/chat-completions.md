@@ -1,6 +1,6 @@
 ---
 description: Chat Completions 的请求字段、响应结构与模型参数兼容说明。
-lastVerified: "2026-10-28"
+lastVerified: "2026-11-24"
 ---
 # 聊天补全
 
@@ -29,19 +29,21 @@ Content-Type: application/json
 
 ## 请求示例
 
-将 `your-model-id` 替换为真实模型 ID，并先设置 `MUGUA_API_KEY`：
+先按[快速开始](/guide/start#_2-设置环境变量)设置 `MUGUA_API_KEY` 与 `MUGUA_MODEL`：
 
 ```bash
 curl --fail-with-body --silent --show-error \
   https://api.mugua.link/v1/chat/completions \
   -H "Authorization: Bearer $MUGUA_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{
-    "model": "your-model-id",
-    "messages": [
-      { "role": "user", "content": "你好，请简短介绍自己。" }
-    ]
-  }'
+  -d @- <<EOF
+{
+  "model": "$MUGUA_MODEL",
+  "messages": [
+    { "role": "user", "content": "你好，请简短介绍自己。" }
+  ]
+}
+EOF
 ```
 
 PowerShell 原生请求示例见[快速开始](/guide/start#_4-发送生成请求)，SDK 示例见[SDK 配置](/guide/sdk)。

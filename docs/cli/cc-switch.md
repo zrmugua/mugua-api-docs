@@ -1,14 +1,14 @@
 ---
 description: 使用 CC Switch 管理木瓜 API 在多个开发工具中的配置。
-lastVerified: "2026-10-29"
+lastVerified: "2026-11-24"
 ---
 # CC Switch 统一配置
 
-CC Switch 是一个跨平台桌面配置管理工具，可集中管理 Claude Code、Codex、Gemini CLI、OpenCode、OpenClaw 等十余种开发工具的供应商与模型设置，还提供本地路由和自动故障切换。具体支持范围以安装版本为准。
+CC Switch 是一个跨平台桌面配置管理工具，可集中管理 Claude Code、Codex、Gemini CLI、OpenCode、OpenClaw 等十余种开发工具的供应商与模型设置，还内置 Apps 管理页（可直接检测、安装与更新常用 CLI）、本地路由和自动故障切换。具体支持范围以安装版本为准。
 
 ## 安装
 
-Windows 从 [GitHub Releases](https://github.com/farion1231/cc-switch/releases) 下载 `CC-Switch-v版本号-Windows.msi` 安装包，或 `-Portable.zip` 免安装版；ARM 设备选择带 `arm64` 的文件。
+Windows 可从 [CC Switch 官网](https://ccswitch.io) 或 [GitHub Releases](https://github.com/farion1231/cc-switch/releases) 下载 `CC-Switch-v版本号-Windows.msi` 安装包，或 `-Portable.zip` 免安装版；ARM 设备选择带 `arm64` 的文件。
 
 macOS 可以使用：
 
@@ -32,7 +32,7 @@ paru -S cc-switch-bin
 4. 保存，并按当前工具的方式启用或添加配置。
 5. 重启对应 CLI 或编辑器，发送测试消息。
 
-不同工具的字段和启用方式可能不同。建议为每个工具使用单独的令牌，并选择对应分组：Claude Code 用 Claude 类分组，Codex 用 Codex 类分组，或都用 `auto`（见[分组与令牌](/guide/groups)）。
+不同工具的字段和启用方式可能不同。建议为每个工具使用单独的令牌，并选择提供目标模型的分组或 `auto`（见[分组与令牌](/guide/groups)）。
 
 ## 地址与协议
 
@@ -53,13 +53,12 @@ CC Switch 的本地路由支持供应商队列：当前供应商请求失败时�
 | --- | --- | --- |
 | 木瓜 API 主站 | `https://api.mugua.link` | `https://api.mugua.link/v1` |
 | 木瓜 API CF 站 | `https://api.668851.xyz` | `https://api.668851.xyz/v1` |
-| 木瓜 API 加速站 | `https://api-fast.668851.xyz` | `https://api-fast.668851.xyz/v1` |
 
 线路切换只能解决网络问题；分组无可用渠道等错误换线路也不会恢复，应修改令牌分组或使用 `auto` 的跨分组重试。自动切换也会让失败的请求重试，留意重复消耗。
 
 ## 检查生效的配置
 
-先确认使用的是直接配置还是本地代理。代理模式下，CLI 指向本机网关，网关中的上游地址才是木瓜 API。
+先确认使用的是直接配置还是本地代理。代理模式下，CLI 指向本机网关，网关中的上游地址才是木瓜 API。如果本机同时安装了 AIO Coding Hub，不要同时开启两者的本地代理模式，避免互相覆盖 CLI 配置。
 
 启用后，在对应工具内查看提供商、模型与地址（Claude Code 用 `/status`），发送消息，再到木瓜控制台“使用日志”检查记录。
 
@@ -73,5 +72,6 @@ CC Switch 的本地路由支持供应商队列：当前供应商请求失败时�
 
 ## 官方参考
 
+- [CC Switch 官网](https://ccswitch.io)
 - [CC Switch 项目与安装说明](https://github.com/farion1231/cc-switch)
 - [版本下载](https://github.com/farion1231/cc-switch/releases)

@@ -1,6 +1,6 @@
 ---
 description: 使用官方 OpenAI SDK 在 Node.js 和 Python 中调用木瓜 API，覆盖聊天补全、Responses 和流式输出。
-lastVerified: "2026-10-28"
+lastVerified: "2026-11-24"
 ---
 # SDK 配置
 

@@ -1,12 +1,39 @@
+const SITE_URL = 'https://docs.668851.xyz'
+const SITE_NAME = '木瓜 API'
+const DEFAULT_DESC = '木瓜 API 开发者文档：快速接入、SDK 与开发工具配置、接口参考和故障排查。'
+
 export default {
   lang: 'zh-CN',
-  title: '木瓜 API',
-  description: '木瓜 API 开发者文档：快速接入、SDK 与开发工具配置、接口参考和故障排查。',
+  title: SITE_NAME,
+  description: DEFAULT_DESC,
+
+  sitemap: {
+    hostname: SITE_URL
+  },
 
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }],
-    ['meta', { name: 'theme-color', content: '#2463d4' }]
+    ['meta', { name: 'theme-color', content: '#2463d4' }],
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:site_name', content: SITE_NAME }],
+    ['meta', { name: 'twitter:card', content: 'summary' }]
   ],
+
+  transformHead({ pageData }) {
+    const routePath = pageData.relativePath
+      .replace(/(?:^|\/)index\.md$/, '')
+      .replace(/\.md$/, '.html')
+    const canonical = routePath ? `${SITE_URL}/${routePath}` : `${SITE_URL}/`
+    const pageTitle = pageData.title ? `${pageData.title} | ${SITE_NAME}` : SITE_NAME
+    const pageDesc = pageData.description || pageData.frontmatter?.description || DEFAULT_DESC
+
+    return [
+      ['link', { rel: 'canonical', href: canonical }],
+      ['meta', { property: 'og:title', content: pageTitle }],
+      ['meta', { property: 'og:description', content: pageDesc }],
+      ['meta', { property: 'og:url', content: canonical }]
+    ]
+  },
 
   themeConfig: {
     logo: {
@@ -19,6 +46,7 @@ export default {
       { text: '工具接入', link: '/guide/tools' },
       { text: 'API 参考', link: '/reference/protocols' },
       { text: '常见问题', link: '/guide/faq' },
+      { text: 'QQ 用户群', link: 'https://qm.qq.com/q/Q90cLKHh2k' },
       { text: '控制台', link: 'https://api.mugua.link' }
     ],
 
@@ -83,8 +111,10 @@ export default {
       }
     ],
 
-    outline: [2, 3],
-    outlineTitle: '本页内容',
+    outline: {
+      level: [2, 3],
+      label: '本页内容'
+    },
     docFooter: { prev: '上一篇', next: '下一篇' },
     sidebarMenuLabel: '文档目录',
     returnToTopLabel: '返回顶部',
@@ -115,7 +145,7 @@ export default {
     },
 
     footer: {
-      message: '木瓜 API · 开发者文档',
+      message: '木瓜 API · 开发者文档 · <a href="https://qm.qq.com/q/Q90cLKHh2k" target="_blank" rel="noreferrer">QQ 用户群</a> · <a href="/llms.txt">llms.txt</a>',
       copyright: 'Copyright © 2026 木瓜 API'
     }
   }

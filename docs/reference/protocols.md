@@ -1,3 +1,7 @@
+---
+description: 对照 Chat Completions、Responses API、Anthropic Messages 与 Images 接口的路径、鉴权、输入输出及流式事件差异。
+lastVerified: "2026-11-24"
+---
 # 接口协议对照
 
 木瓜 API 提供多种兼容接口。按工具所需协议选择接口和模型，再使用对应的请求体、鉴权与返回解析方式。
@@ -10,7 +14,7 @@
 | Chat Completions | `POST /v1/chat/completions` | 聊天应用、OpenAI 兼容客户端 |
 | Responses API | `POST /v1/responses` | Codex、Responses 模式的工具 |
 | Anthropic Messages | `POST /v1/messages` | Claude Code、Anthropic SDK |
-| 图片生成 | `POST /v1/images/generations` | `gpt-image-2` 等图片模型，见[图片生成](/reference/images) |
+| 图片生成 | `POST /v1/images/generations` | 图片生成模型，见[图片生成](/reference/images) |
 
 主站域名为 `https://api.mugua.link`，备用线路见[线路选择](/guide/base-url#线路选择)。可用模型、协议、参数和扩展能力以控制台及实际响应为准。
 

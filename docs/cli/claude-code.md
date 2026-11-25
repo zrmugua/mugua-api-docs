@@ -1,14 +1,14 @@
 ---
 description: 通过 Anthropic Messages 协议配置 Claude Code CLI、VS Code 扩展与桌面应用。
-lastVerified: "2026-10-29"
+lastVerified: "2026-11-24"
 ---
 # Claude Code 安装配置
 
-Claude Code 通过 Anthropic Messages 协议调用木瓜 API。令牌需要属于提供 Claude 模型的分组（优质 Claude、特价 Claude、特殊 Claude 等）或 `auto`，见[分组与令牌](/guide/groups)。
+Claude Code 通过 Anthropic Messages 协议调用木瓜 API。令牌需要属于提供目标 Claude 模型的分组或 `auto`，见[分组与令牌](/guide/groups)。
 
 ## 安装
 
-优先使用官方原生安装器：
+Windows 原生运行依赖 **Git for Windows（Git Bash）**，请先安装 [Git for Windows](https://git-scm.com/downloads/win)（保持默认选项即可），再运行官方原生安装器：
 
 ::: code-group
 
@@ -22,11 +22,11 @@ irm https://claude.ai/install.ps1 | iex
 
 :::
 
-安装完成后运行 `claude --version`。系统要求、其他安装方式与更新说明见[官方安装文档](https://code.claude.com/docs/en/setup)。
+安装完成后**重新打开一个终端窗口**，运行 `claude --version` 确认生效。系统要求、其他安装方式与更新说明见[官方安装文档](https://code.claude.com/docs/en/setup)。
 
 ## 1. 先验证令牌
 
-在终端设置变量，用一条最小请求确认地址和令牌可用，再启动 Claude Code。这样出错时能分清是令牌问题还是工具配置问题。
+在终端设置变量，用一条最小请求确认地址和令牌可用，再启动 Claude Code。这样出错时能分清是令牌问题还是工具配置问题。将示例中的 `your-api-key` 和 `your-model-id` 替换为你的真实令牌与模型广场中的 Claude 模型 ID：
 
 ::: code-group
 
@@ -59,7 +59,11 @@ Invoke-RestMethod -Method Post -Uri "$env:ANTHROPIC_BASE_URL/v1/messages" `
 
 ## 2. 写入配置文件
 
-在同一终端运行 `claude` 就能使用上面的变量。需要持久使用时，将下面的 `env` 合并到用户级 `~/.claude/settings.json`（Windows 为 `%USERPROFILE%\.claude\settings.json`）：
+在同一终端运行 `claude` 就能使用上面的变量。需要持久使用时，将配置合并到用户级 `~/.claude/settings.json`（Windows 为 `%USERPROFILE%\.claude\settings.json`，目录不存在时先新建 `.claude` 文件夹）。
+
+<ConfigFill tool="claude-code" />
+
+静态示例结构如下（请务必将所有占位值替换为真实令牌和模型广场中的真实模型 ID）：
 
 ```json
 {
@@ -79,7 +83,7 @@ Invoke-RestMethod -Method Post -Uri "$env:ANTHROPIC_BASE_URL/v1/messages" `
 
 ### 模型槽位
 
-Claude Code 按任务在 Opus、Sonnet、Haiku 三个槽位间选择模型，会话标题等后台小任务使用 Haiku 槽位。槽位的内置默认 ID 不一定在你的令牌分组中，建议像上面一样全部映射到模型广场里可用的模型；只有一个可用模型时，三个槽位可以填同一个 ID。
+Claude Code 按任务在 Opus、Sonnet、Haiku 三个槽位间选择模型，会话标题等后台小任务使用 Haiku 槽位。槽位的内置默认 ID 不一定在你的令牌分组中，建议像上面一样全部替换为模型广场里可用的真实模型 ID；只有一个可用模型时，三个槽位可以填同一个 ID，不要原样保留占位符。
 
 只想固定当前会话使用的模型，也可以设置 `ANTHROPIC_MODEL`，或在会话里用 `/model` 切换。
 
@@ -142,9 +146,11 @@ Claude 桌面应用不读取 `ANTHROPIC_BASE_URL` 或 `settings.json`。需要�
 
 | 现象 | 检查 |
 | --- | --- |
+| Windows 提示缺少 Git / 找不到 `bash.exe` | 安装 Git for Windows；若自定义了安装路径，设置系统环境变量 `CLAUDE_CODE_GIT_BASH_PATH` 指向 `bash.exe` |
+| 安装后提示 `claude` 不是内部或外部命令 | 关闭并重新打开终端；确认 `%USERPROFILE%\.local\bin` 在 PATH 中 |
 | `401` | 令牌是否完整有效；是否误用 `ANTHROPIC_API_KEY` 或被其他配置覆盖 |
 | `404` | 实际地址是否重复出现 `/v1` |
-| 无可用渠道 / 子任务失败 | 模型槽位映射的 ID 是否都在令牌分组中 |
+| 无可用渠道 / 子任务失败 | 模型槽位映射的 ID 是否都已替换且在令牌分组中 |
 | `400` 提示未知字段或 `Extra inputs are not permitted` | 设置 `CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS=1` |
 | `400` 提示 `thinking` 或 `adaptive` | 当前渠道不支持该模型的自适应推理，换用其他分组，或联系管理员 |
 | `400` 提示上下文或 token 超限 | 运行 `/compact`，并按需设置 `CLAUDE_CODE_AUTO_COMPACT_WINDOW` |
@@ -152,6 +158,7 @@ Claude 桌面应用不读取 `ANTHROPIC_BASE_URL` 或 `settings.json`。需要�
 
 ## 官方参考
 
+- [安装与系统要求](https://code.claude.com/docs/en/setup)
 - [连接第三方网关](https://code.claude.com/docs/en/llm-gateway-connect)
 - [VS Code 扩展与第三方提供商](https://code.claude.com/docs/en/vs-code)
 - [环境变量参考](https://code.claude.com/docs/en/env-vars)

@@ -1,6 +1,6 @@
 ---
 description: Anthropic Messages 的鉴权、请求参数、SDK 与响应解析示例。
-lastVerified: "2026-10-28"
+lastVerified: "2026-11-24"
 ---
 # Anthropic Messages
 
@@ -39,11 +39,13 @@ curl --fail-with-body --silent --show-error \
   -H "x-api-key: $MUGUA_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
   -H "Content-Type: application/json" \
-  -d '{
-    "model": "your-model-id",
-    "max_tokens": 1024,
-    "messages": [{ "role": "user", "content": "你好，请简短介绍自己。" }]
-  }'
+  -d @- <<EOF
+{
+  "model": "$MUGUA_MODEL",
+  "max_tokens": 1024,
+  "messages": [{ "role": "user", "content": "你好，请简短介绍自己。" }]
+}
+EOF
 ```
 
 ```powershell [Windows PowerShell]
@@ -68,11 +70,34 @@ $result.content | Where-Object type -eq "text" | ForEach-Object { $_.text }
 
 :::
 
-## Python SDK
+## SDK 示例
 
-安装 `python -m pip install anthropic` 后，使用环境变量调用：
+安装官方 SDK（Node.js 运行 `npm install @anthropic-ai/sdk`，Python 运行 `python -m pip install anthropic`），使用环境变量调用：
 
-```python
+::: code-group
+
+```js [Node.js]
+import Anthropic from '@anthropic-ai/sdk'
+
+const client = new Anthropic({
+  apiKey: process.env.MUGUA_API_KEY,
+  baseURL: 'https://api.mugua.link',
+  timeout: 60_000,
+  maxRetries: 1
+})
+
+const message = await client.messages.create({
+  model: process.env.MUGUA_MODEL,
+  max_tokens: 1024,
+  messages: [{ role: 'user', content: '你好，请简短介绍自己。' }]
+})
+
+for (const block of message.content) {
+  if (block.type === 'text') console.log(block.text)
+}
+```
+
+```python [Python]
 import os
 from anthropic import Anthropic
 
@@ -93,6 +118,8 @@ for block in message.content:
     if block.type == "text":
         print(block.text)
 ```
+
+:::
 
 ## 响应示例
 
